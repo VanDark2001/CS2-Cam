@@ -1,0 +1,85 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go build output
+/cs2demoparser
+/parser
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+# vendor/
+
+# Environment configuration
+.env
+.env.*
+!.env.example
+!web/.env.example
+
+# Python virtual environments and generated caches
+.venv/
+.venv*/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Frontend and backend build output
+node_modules/
+dist/
+target/
+.cache/
+.pov-profile/
+*.log
+
+# Local runtime data and generated media
+avatars/
+uploads/
+server/uploads/
+*.dem
+*.db
+*.sqlite
+*.sqlite3
+
+# Historical workspace and personal/generated documents
+/demoshow/
+/NEW_CHAT_PROMPT.md
+/docs/*_HANDOFF.md
+*.docx
+*.pdf
+
+# IDE / Editor specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# SQLite WAL sidecars and application data
+data/
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+*.sqlite3.migration-*.tmp*

@@ -1,0 +1,105 @@
+{
+  "name": "cs2-cam-desktop",
+  "version": "0.1.1",
+  "description": "CS2 Cam 本地比赛分析与 POV 回放",
+  "main": "main.cjs",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "portable": "../.venv312/Scripts/python.exe ../tools/build_portable.py"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12",
+    "resedit": "^1.7.2"
+  },
+  "build": {
+    "appId": "com.csdemo.show",
+    "productName": "CS2 Cam",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "portable-runtime.cjs",
+      "backend-build.cjs",
+      "package.json",
+      "assets/app-icon.ico",
+      "assets/app-icon.png",
+      "updater.cjs",
+      "release-config.json",
+      "install-update.ps1"
+    ],
+    "extraResources": [
+      {
+        "from": "../server/target",
+        "to": "project/server/target",
+        "filter": [
+          "*.jar"
+        ]
+      },
+      {
+        "from": "../web/dist",
+        "to": "project/web/dist"
+      },
+      {
+        "from": "../flash_blinds.py",
+        "to": "project/flash_blinds.py"
+      },
+      {
+        "from": "../demoparser2_mysql.py",
+        "to": "project/demoparser2_mysql.py"
+      },
+      {
+        "from": "../replay_effects.py",
+        "to": "project/replay_effects.py"
+      },
+      {
+        "from": "../replay_positions.py",
+        "to": "project/replay_positions.py"
+      },
+      {
+        "from": "../db_schema.py",
+        "to": "project/db_schema.py"
+      },
+      {
+        "from": "../sqlite_schema.sql",
+        "to": "project/sqlite_schema.sql"
+      },
+      {
+        "from": "../sqlite_schema_v2.sql",
+        "to": "project/sqlite_schema_v2.sql"
+      },
+      {
+        "from": "../match_scoring.py",
+        "to": "project/match_scoring.py"
+      },
+      {
+        "from": "../steam_avatar_scraper.py",
+        "to": "project/steam_avatar_scraper.py"
+      },
+      {
+        "from": "../requirements.txt",
+        "to": "project/requirements.txt"
+      },
+      {
+        "from": "../tools",
+        "to": "project/tools"
+      },
+      {
+        "from": "../.venv312",
+        "to": "project/.venv312"
+      },
+      {
+        "from": "../server/src/main/resources",
+        "to": "project/server/src/main/resources"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/app-icon.ico"
+    }
+  }
+}

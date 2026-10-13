@@ -1,0 +1,6 @@
+demoparser2==0.42.0
+pandas==3.0.6
+numpy==2.5.3
+pyarrow==25.0.1
+polars==1.44.2
+websockets==15.0.1

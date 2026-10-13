@@ -1,0 +1,92 @@
+/* 全站动效令牌：页面、滚动入场和解析进度共用这一组时间与缓动。 */
+:root {
+  --motion-duration-fast: 140ms;
+  --motion-duration-normal: 220ms;
+  --motion-duration-page: 280ms;
+  --motion-duration-slow: 460ms;
+  --motion-ease-standard: cubic-bezier(.22, .61, .36, 1);
+  --motion-ease-emphasis: cubic-bezier(.16, 1, .3, 1);
+  --motion-distance-sm: 10px;
+  --motion-distance-md: 18px;
+}
+
+/* RouterView 的页面切换。只移动和淡入页面容器，不触碰回放画布的内部时间轴。 */
+.title-editor-enter-active,
+.title-editor-leave-active {
+  transition: opacity var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard);
+}
+.title-editor-enter-from { opacity: 0; transform: translateY(4px); }
+.title-editor-leave-to { opacity: 0; transform: translateY(-4px); }
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity var(--motion-duration-page) var(--motion-ease-standard),
+    transform var(--motion-duration-page) var(--motion-ease-emphasis);
+  will-change: opacity, transform;
+}
+.page-enter-from { opacity: 0; transform: translateY(var(--motion-distance-sm)); }
+.page-leave-to { opacity: 0; transform: translateY(calc(var(--motion-distance-sm) * -0.5)); }
+
+/* 稳定的页面区块进入视口后才出现，避免首屏一次性闪动整页。 */
+.motion-ready [data-motion="reveal"] {
+  opacity: 0;
+  transform: translateY(var(--motion-distance-md));
+  transition:
+    opacity var(--motion-duration-slow) var(--motion-ease-standard),
+    transform var(--motion-duration-slow) var(--motion-ease-emphasis);
+  transition-delay: var(--motion-delay, 0ms);
+  will-change: opacity, transform;
+}
+.motion-ready [data-motion="reveal"].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* 解析进度：只有队列在运行时扫描，完成后保持静止。 */
+.global-parser-progress.motion-progress::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -28%;
+  width: 28%;
+  background: linear-gradient(90deg, transparent, rgba(219, 225, 109, .22), transparent);
+  transform: translateX(0);
+  animation: none;
+  pointer-events: none;
+}
+.global-parser-progress.motion-progress.running::after {
+  animation: motion-progress-scan 1.8s var(--motion-ease-standard) infinite;
+}
+.global-parser-progress.motion-progress > i em {
+  transition: width var(--motion-duration-slow) var(--motion-ease-standard);
+}
+.job-state.uploading {
+  animation: motion-status-pulse 1.4s var(--motion-ease-standard) infinite;
+}
+
+@keyframes motion-progress-scan {
+  from { transform: translateX(0); }
+  to { transform: translateX(460%); }
+}
+@keyframes motion-status-pulse {
+  0%, 100% { opacity: .72; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-editor-enter-active,
+  .title-editor-leave-active,
+  .favorite-editor-enter-active,
+  .favorite-editor-leave-active,
+  .page-enter-active,
+  .page-leave-active,
+  .motion-ready [data-motion="reveal"],
+  .global-parser-progress.motion-progress > i em {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  .motion-ready [data-motion="reveal"] {
+    opacity: 1 !important;
+  }
+}

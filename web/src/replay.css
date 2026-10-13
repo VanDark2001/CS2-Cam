@@ -1,0 +1,1131 @@
+.replay-page{padding:0 clamp(16px,6vw,86px) 60px;max-width:1600px;margin:auto}.replay-head{display:flex;justify-content:space-between;align-items:end;padding:45px 0 25px;border-bottom:1px solid #2a3031}.replay-head h1{font-family:"Barlow Condensed";font-size:clamp(38px,5vw,58px);margin:8px 0}.replay-head p{color:#839095;font-size:13px}.replay-controls{display:flex;gap:8px}.replay-controls select,.replay-controls button{background:#1b2021;color:#dfe8e5;border:1px solid #34403e;padding:11px;border-radius:4px}.replay-controls button{background:#c6ca4c;color:#081510;font-weight:700}.round-nav{display:flex;gap:5px;flex-wrap:wrap;padding:14px 0 4px}.round-nav button{border:1px solid #34403e;background:#1b2021;color:#9da9aa;border-radius:4px;padding:6px 9px;cursor:pointer}.round-nav button.active,.round-nav button:hover{background:#c6ca4c;color:#071612;border-color:#c6ca4c}.replay-layout{display:grid;grid-template-columns:260px minmax(520px,1fr) 260px;align-items:stretch;gap:18px;margin-top:10px}.radar-panel,.event-panel,.timeline{background:#181d1e;border:1px solid #293334}.radar-panel{position:relative;aspect-ratio:1/1;height:auto;min-height:0}.radar-panel canvas{width:100%;height:100%;display:block}.tick-readout{position:absolute;left:18px;bottom:16px;color:#43e5be;font-size:12px;letter-spacing:1px}.event-panel{padding:20px}.event-panel h2{font-size:17px;margin:0 0 16px}.event-row{padding:12px 0;border-bottom:1px solid #293334;display:flex;flex-direction:column;gap:5px}.event-row b{font-size:12px;color:#d9e2df}.event-row span{font-size:11px;color:#78878a}.empty{color:#6f7d7f;font-size:12px}.timeline{margin-top:18px;padding:18px 22px}.timeline-label{display:flex;justify-content:space-between;color:#819092;font-size:11px;margin-bottom:12px}.timeline-label strong{color:#42e1bb}.round-track{display:flex;height:8px;margin-bottom:12px;gap:2px}.round-track i{background:#34403e;cursor:pointer}.round-track i.active{background:#c6ca4c}.timeline input{width:100%;accent-color:#c6ca4c}@media(max-width:850px){.replay-layout{grid-template-columns:1fr}.team-left,.team-right{width:auto}.replay-head{display:block}.replay-controls{margin-top:18px;flex-wrap:wrap}.replay-layout{grid-template-columns:1fr}.event-panel{min-height:160px}.radar-panel{height:min(82vw,520px);min-height:320px}}
+.play-button{min-width:74px}.round-nav{display:none}
+.spectator-time{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:3;background:#101918e8;border:1px solid #31534d;border-radius:6px;padding:7px 15px;color:#54e8bf;font:700 14px Inter;letter-spacing:1px}.team-overlay{position:relative;top:0;z-index:2;display:flex;flex-direction:column;gap:3px;width:155px;padding:9px;background:#111817d9;border:1px solid #34403e;border-radius:6px;color:#d8e5e2;font:11px Inter}.team-overlay b{color:#4de1b9;font-size:10px;letter-spacing:1px;margin-bottom:3px}.team-overlay span{display:flex;justify-content:space-between;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.team-overlay i{color:#f2bf4c;font-style:normal}.team-left{position:relative;left:auto;top:auto;width:auto}.team-right{position:relative;right:auto;top:auto;width:auto}.round-track i{transition:background .15s,transform .15s}.round-track i:hover{background:#54e8bf;transform:scaleY(1.6)}
+.next-button{background:#202829!important;color:#c9d4d2!important}.next-button:hover{border-color:#c6ca4c!important}
+.utility-legend{position:absolute;right:14px;bottom:14px;display:flex;gap:10px;padding:7px 9px;background:#111817d9;border:1px solid #34403e;border-radius:5px;color:#b7c5c1;font:10px Inter}.utility-legend span{display:inline-flex;align-items:center;gap:4px}.legend-dot{width:7px;height:7px;border-radius:50%;display:inline-block}.legend-dot.smoke{background:#d8e4e2}.legend-dot.fire{background:#ff9f43}.legend-dot.flash{background:#f4f1b8}@media(max-width:600px){.utility-legend{left:14px;right:auto;bottom:38px}}
+.team-overlay span.dead{opacity:.38}.team-overlay b{line-height:1.4}
+.team-overlay{width:248px;padding:14px 13px;background:#101516f2;border-color:#263535;box-shadow:0 8px 18px #0006}.team-overlay b{display:flex;justify-content:space-between;color:#dce9e5;font-size:11px;border-bottom:1px solid #33413e;padding-bottom:8px;margin-bottom:2px}.team-overlay span{min-height:25px;padding:5px 0;border-bottom:1px solid #293431;font-size:11px}.team-overlay span:last-child{border-bottom:0}.team-overlay i{color:#55dfbc;font-weight:700}.team-overlay span.dead i{color:#ff7384}
+
+.team-overlay span{flex-wrap:wrap}.team-overlay span small{display:block;width:100%;color:#9db0aa;font-size:11px;margin-top:3px}.team-overlay span i{margin-left:auto}
+
+
+.team-overlay span strong{overflow:hidden;text-overflow:ellipsis;font-weight:700}.team-overlay span>i{margin-left:auto}.team-overlay span small{display:flex;align-items:center;gap:10px}.team-overlay span small b{color:#e8efed;font-weight:600}.team-overlay span small em{color:#b8c8c3;font-style:normal;margin-left:auto}.team-overlay span small span{display:inline;color:#9db0aa;border:0;padding:0;min-height:0;width:auto}
+
+.team-overlay span small .hp-bar{display:inline-block;width:62px;height:4px;background:#293634;border-radius:3px;overflow:hidden}.team-overlay span small .hp-bar i{display:block;height:100%;background:#31d9a9}.team-overlay span small .armor{color:#a9c5d5;width:auto}
+
+.weapon-icon{width:58px;height:20px;object-fit:contain;object-position:left center;filter:brightness(1.4);margin-right:3px}
+
+.weapon-icon+b{display:none}
+
+.weapon-icon{width:58px;height:18px;object-fit:contain;object-position:left center;filter:brightness(0) invert(1);opacity:.92}.team-overlay span small .weapon-icon{display:inline-block}
+
+@media(min-width:1400px){.replay-layout{gap:28px}.team-overlay{width:auto}.radar-panel{max-width:760px;justify-self:center;width:100%}}
+
+.team-overlay{min-width:0}.team-overlay span{font-size:12px}.team-overlay span small{font-size:11px}
+
+.team-overlay{padding:16px 15px}.team-overlay span{min-height:46px;padding:9px 0;line-height:1.25}.team-overlay span small{margin-top:5px;gap:12px}.team-overlay b{font-size:12px;padding-bottom:10px}.team-overlay span strong{font-size:13px}
+
+.team-overlay span small{flex-wrap:wrap}.team-overlay span small .hp-bar{order:10;flex-basis:100%;width:100%;margin-top:3px}.team-overlay span small .hp-value{margin-left:auto}.team-overlay span small .armor{order:6}
+
+.inventory-row{display:flex;gap:7px;min-height:17px;margin-top:3px}.inventory-row img{width:20px;height:15px;object-fit:contain;filter:brightness(0) invert(1);opacity:.8}
+
+.team-overlay{transform:scale(1.04);transform-origin:top center}.inventory-row{margin-top:8px;padding-top:3px;border-top:1px solid #293634}
+
+.game-countdown{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:112px;height:38px;padding:7px 13px;white-space:nowrap;background:#101817e8;border:1px solid #31534d;border-radius:5px;color:#e5f3ee;font:700 14px Inter;letter-spacing:0}.game-countdown.bomb{color:#ff6274;border-color:#803d48}
+
+.killfeed{position:absolute;top:14px;right:6px;display:flex;flex-direction:column;gap:4px;align-items:flex-end}.killfeed div{display:flex;align-items:center;gap:7px;padding:4px 8px;background:#141719e8;border:1px solid #6d353d;color:#e8eeee;font:11px Inter}.killfeed b{color:#f0c45b}.killfeed span{color:#fff}.killfeed i{color:#ff6374;font-style:normal}.killfeed strong{color:#69aee7}.game-countdown{z-index:2}
+
+.killfeed .kill-icon{width:30px;height:14px;object-fit:contain;filter:brightness(0) invert(1)}
+.killfeed .headshot-icon{width:16px;height:16px;filter:brightness(0) invert(1)}
+.killfeed .kill-assist{color:#b9c9e4;font-size:10px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.killfeed .kill-smoke{color:#d2dc9a;font-size:9px;border:1px solid #68714b;padding:1px 3px;line-height:1}
+
+.team-overlay{height:auto;align-self:stretch;box-sizing:border-box;overflow:hidden;transform:none}.radar-panel{height:auto;aspect-ratio:1/1}
+
+
+.team-overlay>span{flex:1;min-height:0}
+
+.team-overlay>b .team-score{margin-left:auto;color:#f2c65a;font-style:normal;font-size:14px}
+
+.round-track{height:auto;min-height:24px;gap:3px}.round-track button{min-width:0;padding:4px 0;border:0;border-radius:3px;background:#34403e;color:#c3cfcb;cursor:pointer;font:600 10px Inter}.round-track button.active{background:#c6ca4c;color:#071612}.round-track button:focus-visible{outline:2px solid #fff}.replay-controls button:disabled{opacity:.4;cursor:default}.replay-status{color:#c3cfcb;font-size:13px}.timeline input{cursor:pointer}
+
+html,body,#app{overflow-anchor:none}.replay-page{overflow-anchor:none}.replay-status{position:absolute;z-index:2;min-height:20px;margin-top:6px;visibility:hidden}.replay-status.visible{visibility:visible}.replay-status button{margin-left:6px;background:#c6ca4c;border:0;border-radius:3px;padding:3px 8px;cursor:pointer}
+
+.pov-toolbar{display:flex;align-items:center;gap:10px;margin:10px 0;color:#8b9a98;font-size:12px}.pov-toolbar button,.favorite-item button{background:#1d2928;border:1px solid #38534d;color:#dce9e5;border-radius:4px;padding:7px 10px;cursor:pointer}.pov-toolbar button:first-of-type{background:#c6ca4c;color:#071612;border-color:#c6ca4c}.pov-toolbar button:disabled{opacity:.45;cursor:default}.pov-select{display:inline-flex;vertical-align:middle;margin-right:5px}.pov-select input{accent-color:#c6ca4c}.favorites-panel{margin-top:16px;background:#181d1e;border:1px solid #293334;padding:14px}.favorites-head{display:flex;justify-content:space-between;color:#dce9e5;margin-bottom:10px}.favorites-head span,.favorite-item small{color:#819092;font-size:11px}.favorite-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid #293334}.favorite-item strong,.favorite-item small{display:block}.favorite-item small{margin-top:3px}
+/* Broadcast-style replay composition: POV left, enlarged radar center, scoreboards beside it. */
+.replay-layout{grid-template-columns:minmax(180px,250px) minmax(210px,260px) minmax(620px,1fr) minmax(210px,260px);gap:12px;align-items:stretch}
+.pov-panel{background:#101617;border:1px solid #293837;border-radius:6px;min-width:0;overflow:hidden;display:flex;flex-direction:column;align-self:start;position:sticky;top:16px}
+.pov-panel-title{padding:11px 12px;border-bottom:1px solid #293837;color:#dce9e5;font-weight:700;font-size:12px;letter-spacing:.06em}
+.pov-video{display:block;width:100%;aspect-ratio:9/16;max-height:620px;background:#050707;object-fit:contain}
+.pov-caption{padding:8px 10px;color:#8ea09c;font-size:11px}.pov-download{margin:0 10px 10px;color:#4de1b9;font-size:11px}.pov-empty{padding:28px 14px;color:#71817e;font-size:12px;line-height:1.6}
+.radar-panel{grid-column:3;max-width:none;width:100%;aspect-ratio:1/1;align-self:start}
+.team-left{grid-column:2}.team-right{grid-column:4}
+@media(max-width:1250px){.replay-layout{grid-template-columns:minmax(170px,220px) minmax(190px,230px) minmax(480px,1fr) minmax(190px,230px)}.team-overlay{padding:12px 10px}.team-overlay span strong{font-size:11px}}
+@media(max-width:950px){.replay-layout{grid-template-columns:1fr 1fr}.pov-panel{position:static;grid-column:1 / -1;max-height:none}.pov-video{aspect-ratio:16/9;max-height:420px}.team-left{grid-column:1}.radar-panel{grid-column:1 / -1;grid-row:2}.team-right{grid-column:2;grid-row:1}}
+/* Compact broadcast view */
+.replay-head{padding:14px 0 10px;min-height:34px;align-items:center}.replay-head h1,.replay-head p,.replay-head .eyebrow{display:none}.replay-head:before{content:"CS2 DEMO REPLAY";color:#45dfba;font:700 12px Inter;letter-spacing:.12em}.replay-controls{margin-left:auto}.replay-layout{position:relative;display:grid;grid-template-columns:minmax(180px,250px) minmax(760px,1fr);gap:14px;align-items:start}.pov-panel{grid-column:1;grid-row:1;position:sticky}.radar-panel{grid-column:2;grid-row:1;width:100%;max-width:none;aspect-ratio:1/1;margin:0;padding-left:220px;padding-right:220px;box-sizing:border-box}.team-overlay{position:absolute;z-index:4;top:0;width:205px;height:100%;box-sizing:border-box}.team-left{left:calc(250px + 14px);grid-column:auto}.team-right{right:0;grid-column:auto}.team-overlay>span{flex:1}.timeline{margin-left:264px}
+@media(max-width:1250px){.replay-layout{grid-template-columns:190px minmax(600px,1fr)}.radar-panel{padding-left:185px;padding-right:185px}.team-overlay{width:175px}.team-left{left:204px}.timeline{margin-left:204px}}
+@media(max-width:950px){.replay-layout{display:grid;grid-template-columns:1fr}.pov-panel{grid-column:1;grid-row:auto}.radar-panel{grid-column:1;grid-row:auto;padding:0}.team-overlay{position:relative;top:auto;left:auto;right:auto;width:auto;height:auto;grid-column:1}.team-left{grid-row:auto}.team-right{grid-row:auto}.timeline{margin-left:0}}
+/* Scoreboards are overlays inside the intact square map. */
+.radar-panel{padding-left:0;padding-right:0;overflow:hidden}
+.radar-panel canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.team-overlay{width:174px;background:#101516e8;backdrop-filter:blur(2px);border-color:#334542}
+.team-left{left:264px;top:0}.team-right{right:0;top:0}
+.team-overlay span{min-height:38px;padding:7px 0}.team-overlay span small{gap:7px}.team-overlay span small .hp-bar{width:100%}
+@media(max-width:1250px){.team-left{left:204px}.team-overlay{width:160px}}
+@media(max-width:950px){.radar-panel canvas{position:absolute}.team-left{left:0;top:0}.team-right{right:0;top:0}.team-overlay{width:42%;max-height:100%;overflow:auto;background:#101516d9}}
+/* Give the broadcast canvas room while keeping the whole map in view. */
+.replay-page{max-width:1840px;padding-left:clamp(28px,7vw,150px);padding-right:clamp(28px,7vw,150px)}
+.replay-layout{width:100%;max-width:1600px;margin-left:auto;margin-right:auto;grid-template-columns:190px minmax(900px,1fr);gap:18px}
+.radar-panel{height:min(74vh,760px);min-height:560px;aspect-ratio:auto}
+.team-left{left:208px}
+.timeline{max-width:1600px;margin-left:auto;margin-right:auto}
+@media(max-width:1250px){.replay-page{padding-left:28px;padding-right:28px}.replay-layout{grid-template-columns:180px minmax(720px,1fr)}.radar-panel{height:min(72vh,680px);min-height:500px}.team-left{left:198px}}
+@media(max-width:950px){.replay-page{padding-left:16px;padding-right:16px}.replay-layout{grid-template-columns:1fr}.radar-panel{height:min(72vw,620px);min-height:360px}.team-left{left:0}.timeline{max-width:none}}
+/* Broadcast reference styling */
+@media(min-width:951px){
+  .replay-page{max-width:1680px;padding:0 24px 48px;background:#070b0c}
+  .replay-layout{max-width:1500px;grid-template-columns:minmax(900px,1fr) 300px;grid-template-rows:auto auto;gap:12px;align-items:start}
+  .radar-panel{grid-column:1;grid-row:1;width:100%;max-width:none;padding:0 190px;box-sizing:border-box;aspect-ratio:1/1}
+  .pov-panel{grid-column:2;grid-row:1 / span 2;width:300px}
+  .team-left,.team-right{position:absolute;top:0;z-index:5;width:180px;height:100%;box-sizing:border-box}
+  .team-left{left:0}.team-right{right:312px}
+  .timeline{grid-column:1;grid-row:2;margin:0}
+  .pov-panel{border-color:#263536;background:#0b1112;max-height:650px}
+  .pov-panel-title{padding:9px 11px;font-size:11px;text-transform:uppercase;color:#b7c8c3}
+  .pov-video{min-height:135px}
+  .team-overlay{background:#0b1112eF;border:1px solid #263536;border-radius:3px;padding:9px 10px;box-shadow:none}
+  .team-overlay>b{font-size:10px;color:#e2ebe8;padding-bottom:7px}
+  .team-overlay span{min-height:33px;padding:6px 0;font-size:10px}
+  .team-overlay span strong{font-size:11px}
+  .team-overlay span small{font-size:9px;gap:5px}
+  .team-overlay span small .hp-bar{height:3px}
+  .radar-panel{max-width:none;filter:none;border:1px solid #263536;background:#0a0e0f}
+  .timeline{background:#0b1112;border-color:#263536;padding:11px 15px;margin-top:10px}
+  .timeline-label{font-size:10px;color:#71847f}
+  .round-track button{height:20px;font-size:9px;background:#1a2526}
+  .round-track button.active{background:#dbe5df;color:#111817}
+}
+/* Two modules: one self-contained 2D stage and one independent POV panel. */
+.replay-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;max-width:1540px;align-items:start}
+.replay-stage{position:relative;grid-column:1;min-width:0;height:720px;background:#0b1112;border:1px solid #263536;overflow:hidden}
+.replay-stage .radar-panel{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:620px;height:620px;aspect-ratio:1/1;max-width:none;min-height:0;margin:0;border:0;background:transparent;filter:none}
+.replay-stage .team-overlay{position:absolute;top:105px;z-index:5;width:168px;height:430px;padding:9px 10px;background:#101617ec;border:1px solid #334542}
+.replay-stage .team-left{left:12px}.replay-stage .team-right{right:12px;left:auto}
+.replay-stage .timeline{position:absolute;left:12px;right:12px;bottom:10px;width:auto;max-width:none;margin:0;padding:8px 12px;background:#101718e8;border:1px solid #293837;z-index:6}
+.replay-layout>.pov-panel{grid-column:2;grid-row:1;position:relative;top:auto;width:300px;max-height:720px;min-height:0}
+.replay-page>.favorites-panel{max-width:1540px;margin:16px auto 0}
+.timeline-label{position:relative}.timeline-actions{display:flex;gap:6px;order:2}.timeline-actions button{padding:5px 10px;font-size:11px}.replay-head .replay-controls{position:static}
+.timeline-actions{align-items:center;background:#0b1011;border:1px solid #273536;border-radius:6px;padding:3px 5px;gap:2px}.timeline-actions .timeline-icon{width:32px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:transparent!important;border:0!important;color:#dfe9e5!important;font-size:17px;line-height:1;font-weight:800;border-radius:50%;transition:background .15s,color .15s}.timeline-actions .timeline-icon:hover{background:#263b38!important;color:#55e5be!important}.timeline-actions .timeline-icon:active{background:#31534d!important;transform:scale(.94)}
+@media(min-width:1151px){
+  .replay-layout{display:grid;width:1400px;max-width:calc(100vw - 80px);grid-template-columns:minmax(1040px,1fr) 300px;gap:18px;margin-left:auto;margin-right:auto;overflow:visible}
+  .replay-stage{width:100%;min-width:1040px;height:760px}
+  .replay-stage .radar-panel{width:680px;height:680px;top:14px}
+  .replay-layout>.pov-panel{width:300px;min-width:300px}
+}
+@media(max-width:1150px){.replay-layout{grid-template-columns:minmax(900px,1fr) 300px;overflow-x:auto}.replay-stage{height:720px}}
+@media(max-width:950px){.replay-layout{display:block;overflow:visible}.replay-stage{height:620px}.replay-stage .radar-panel{width:min(100%,520px);height:auto}.replay-stage .team-overlay{width:130px;top:80px;height:380px}.replay-layout>.pov-panel{width:100%;max-height:none;margin-top:14px}}
+/* Preserve the radar's native square ratio; the extra width becomes breathing room. */
+.radar-panel{width:min(100%,78vh);height:auto;min-height:0;aspect-ratio:1/1;justify-self:center;overflow:hidden}
+.radar-panel canvas{object-fit:fill}
+.team-left{left:0}.team-right{right:0}
+@media(max-width:1250px){.radar-panel{width:min(100%,72vh)}}
+@media(max-width:950px){.radar-panel{width:100%;height:auto;min-height:0;aspect-ratio:1/1}}
+/* Reference composition: a substantial POV column beside a large, centered native-ratio radar. */
+.replay-layout{grid-template-columns:minmax(280px,340px) minmax(900px,1fr);gap:24px;max-width:1780px}
+.pov-panel{width:100%;min-height:420px}
+.radar-panel{width:min(100%,82vh);max-width:900px}
+.team-overlay{width:190px}
+.team-left{left:0}.team-right{right:0}
+@media(max-width:1250px){.replay-layout{grid-template-columns:260px minmax(760px,1fr);gap:18px}.radar-panel{width:min(100%,76vh)}.team-overlay{width:170px}}
+@media(max-width:950px){.replay-layout{grid-template-columns:1fr}.pov-panel{min-height:0}.radar-panel{width:100%}}
+/* Wide stage with the native-ratio map centered and scoreboards in side whitespace. */
+.replay-layout{grid-template-columns:minmax(250px,300px) 190px minmax(760px,1fr) 190px;gap:14px;max-width:1840px;align-items:stretch}
+.pov-panel{grid-column:1;grid-row:1;min-height:420px}
+.team-left{grid-column:2;grid-row:1;position:relative;left:auto;right:auto;top:auto;width:auto;height:100%;background:#101516f2}
+.radar-panel{grid-column:3;grid-row:1;width:min(100%,82vh);height:auto;aspect-ratio:1/1;justify-self:center;align-self:start}
+.team-right{grid-column:4;grid-row:1;position:relative;left:auto;right:auto;top:auto;width:auto;height:100%;background:#101516f2}
+.timeline{grid-column:2 / 5;max-width:none;margin-left:0;margin-right:0}
+@media(max-width:1250px){.replay-layout{grid-template-columns:220px 170px minmax(620px,1fr) 170px}.radar-panel{width:min(100%,74vh)}}
+@media(max-width:950px){.replay-layout{grid-template-columns:1fr 1fr}.pov-panel{grid-column:1 / -1;grid-row:auto}.team-left{grid-column:1;grid-row:auto}.radar-panel{grid-column:1 / -1;grid-row:auto;width:100%}.team-right{grid-column:2;grid-row:auto}.timeline{grid-column:1 / -1}}
+@media(min-width:951px){.replay-layout{grid-template-columns:260px 150px minmax(900px,1fr) 150px}.radar-panel{width:min(100%,86vh)}}
+@media(min-width:1151px){.replay-layout{display:grid!important;width:1400px!important;max-width:calc(100vw - 80px)!important;grid-template-columns:minmax(1040px,1fr) 300px!important;grid-template-rows:auto!important;gap:18px!important}.replay-stage{grid-column:1!important;grid-row:1!important;width:100%!important;min-width:1040px!important;height:760px!important}.replay-layout>.pov-panel{grid-column:2!important;grid-row:1!important;width:300px!important;min-width:300px!important;max-height:760px!important;position:relative!important;top:auto!important;margin:0!important}.replay-stage .radar-panel{width:680px!important;height:680px!important}.replay-stage .team-left{left:12px!important}.replay-stage .team-right{right:12px!important;left:auto!important}}
+@media(min-width:1151px){
+  .replay-head{position:relative;max-width:1500px;margin:0 auto;height:54px;box-sizing:border-box}
+  .replay-controls{position:absolute;right:318px;top:10px;z-index:10;gap:6px}
+  .replay-controls button{padding:8px 12px;font-size:12px}
+  .replay-layout{width:1500px!important;grid-template-columns:300px minmax(1120px,1fr)!important;gap:20px!important}
+  .replay-layout>.pov-panel{grid-column:1!important;grid-row:1!important;width:300px!important;min-width:300px!important;height:860px!important;max-height:860px!important}
+  .replay-stage{grid-column:2!important;grid-row:1!important;min-width:1120px!important;height:860px!important}
+  .replay-stage .radar-panel{width:820px!important;height:820px!important;top:12px!important}
+  .replay-stage .team-overlay{top:115px!important;height:610px!important;min-height:610px!important}
+  .replay-stage .team-left{left:12px!important}.replay-stage .team-right{right:12px!important}
+}
+.pov-panel{min-height:260px;max-height:420px;overflow:auto}.pov-video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px}.pov-video{width:100%;aspect-ratio:16/9;max-height:none;object-fit:contain}.pov-file-label{font-size:10px;color:#9fb0ac;padding:0 4px 4px}.pov-caption{font-size:10px}
+.pov-overlay{position:absolute;inset:0;z-index:20;background:#050707;display:flex;align-items:center;justify-content:center}.pov-overlay video{width:100%;height:100%;object-fit:contain;background:#050707}.pov-overlay-close{position:absolute;right:10px;top:10px;width:30px;height:30px;border:1px solid #60716d;border-radius:50%;background:#101817dd;color:#fff;font-size:22px;line-height:1;cursor:pointer}.pov-overlay-close:hover{background:#c6ca4c;color:#071612}
+.pov-video{height:170px!important;min-height:170px!important;max-height:170px!important}
+.pov-return-map{display:flex;width:calc(100% - 12px);height:170px;min-height:170px;max-height:170px;margin:6px;padding:0;align-items:center;justify-content:center;background:#162523;border:1px dashed #4c756c;border-radius:4px;color:#55e5be;font:600 12px Inter;cursor:pointer}.pov-return-map:hover{background:#21403a}
+.pov-delete{margin-left:8px;background:transparent;border:1px solid #693941;color:#ff8391;border-radius:3px;padding:3px 6px;font-size:10px;cursor:pointer}
+/* Compact POV list with synchronized player tiles. */
+.pov-panel{max-height:460px}.pov-video-grid{display:flex;flex-direction:column;gap:6px;padding:6px;overflow-y:auto}.pov-video-grid>template{display:contents}.pov-video{width:100%;height:92px;aspect-ratio:16/9;object-fit:cover;background:#050707;border:1px solid #2d3c39;border-radius:3px}.pov-file-label{margin-top:-24px;position:relative;padding:4px 6px;color:#e4efeb;background:#07100ed9;font-size:10px;pointer-events:none}.pov-caption{padding:6px 10px;border-top:1px solid #293837}
+/* Show each POV as a complete readable 16:9 frame. */
+.pov-panel{width:320px;max-height:760px}.pov-video-grid{gap:10px}.pov-video{height:auto;min-height:170px;aspect-ratio:16/9;object-fit:contain;background:#050707}.pov-file-label{margin-top:-26px;padding:6px 8px;font-size:11px}.pov-caption{font-size:11px}
+@media(max-width:1250px){.pov-panel{width:280px}.pov-video{min-height:145px}}
+@media(max-width:950px){.pov-panel{width:100%;max-height:none}.pov-video{min-height:0}}
+/* Wide desktop stage: keep the scoreboards attached to the map and use the viewport. */
+@media(min-width:951px){
+  .replay-page{max-width:1720px;width:100%;box-sizing:border-box;padding-left:28px;padding-right:28px}
+  .replay-layout{width:100%;max-width:1540px;grid-template-columns:280px 170px minmax(620px,760px) 170px;gap:10px;margin-left:auto;margin-right:auto}
+  .radar-panel{grid-column:3;width:100%;max-width:760px;justify-self:center}
+  .team-left{grid-column:2;grid-row:1;position:relative;left:auto;right:auto;width:auto}
+  .team-right{grid-column:4;grid-row:1;position:relative;left:auto;right:auto;width:auto}
+  .timeline{grid-column:2 / 5;width:100%;box-sizing:border-box}
+}
+
+.pov-video.expanded{position:fixed;top:12vh;left:34vw;width:50vw!important;height:70vh!important;max-height:none!important;aspect-ratio:auto;z-index:1000;object-fit:contain;background:#050707;box-shadow:0 0 0 9999px #0008;border:1px solid #49615c;border-radius:6px}
+
+
+
+.pov-overlay{position:absolute;inset:0;z-index:30;background:#050707ee;display:flex;align-items:center;justify-content:center;padding:18px}.pov-overlay video{width:100%;height:100%;object-fit:contain;background:#050707}.pov-overlay-close{position:absolute;right:12px;top:12px;width:32px;height:32px;border:1px solid #60716d;border-radius:50%;background:#101817dd;color:#fff;font-size:22px;cursor:pointer}.pov-overlay-close:hover{background:#c6ca4c;color:#071612}
+
+
+/* Give scoreboard panels enough vertical room for every player row. */
+.replay-stage .team-overlay{height:auto!important;min-height:700px!important;overflow:visible!important}.replay-stage .team-overlay>span{min-height:58px!important;padding:10px 0!important}.replay-stage .team-overlay span small{gap:10px!important}.replay-stage{min-height:820px!important;height:820px!important}
+
+
+/* Reserve a separate bottom band for round controls and progress. */
+.replay-stage .team-overlay{height:calc(100% - 150px)!important;min-height:0!important;max-height:calc(100% - 150px)!important;overflow-y:auto!important}.replay-stage .timeline{height:112px!important;box-sizing:border-box!important;bottom:10px!important;z-index:20!important;background:#101718f5!important}.replay-stage .radar-panel{bottom:150px!important;height:calc(100% - 170px)!important;aspect-ratio:auto!important}
+
+
+.replay-stage .team-overlay{top:105px!important;bottom:150px!important;height:auto!important;max-height:none!important;overflow-y:auto!important}
+
+
+/* Keep the player data panels aligned with the radar frame. */
+@media(min-width:951px){.replay-stage .team-overlay{top:12px!important;height:620px!important;max-height:620px!important;box-sizing:border-box}.replay-stage .radar-panel{top:12px!important}}
+
+.inventory-text{grid-column:1 / -1;color:#b8c8c3;font-size:10px;margin-top:3px;white-space:normal!important;overflow:visible!important}
+
+/* Full-height roster cards with a clearly separated inventory section. */
+.replay-stage .team-overlay{height:980px!important;min-height:980px!important;overflow:visible!important}
+.replay-stage .team-overlay>span{height:190px!important;min-height:190px!important;flex-basis:190px!important;padding:12px 0 14px!important}
+.replay-stage .team-overlay>span>small{min-height:70px!important}
+.replay-stage .inventory-text{display:block!important;min-height:18px!important;margin-top:6px!important;color:#b8c8c3!important}
+.replay-stage .inventory-row{display:flex!important;min-height:34px!important;height:34px!important;margin-top:5px!important}
+/* Keep every player's carried equipment visible inside a scrollable roster. */
+.replay-stage .team-overlay{height:calc(100% - 150px)!important;min-height:0!important;max-height:calc(100% - 150px)!important;overflow-y:auto!important;overflow-x:visible!important}
+.replay-stage .team-overlay>span{height:210px!important;min-height:210px!important;flex:0 0 210px!important;overflow:visible!important;white-space:normal!important;padding:12px 0 16px!important;box-sizing:border-box!important}
+.replay-stage .team-overlay>span>small{min-height:76px!important;overflow:visible!important}
+.replay-stage .inventory-text{display:block!important;min-height:20px!important;height:auto!important;line-height:18px!important;margin-top:7px!important;color:#d2e0db!important;white-space:normal!important;overflow:visible!important}
+.replay-stage .inventory-row{display:flex!important;min-height:30px!important;height:30px!important;margin-top:4px!important;overflow:visible!important}
+.replay-stage .inventory-row img{width:24px!important;height:20px!important}
+/* Fit the complete five-player roster in one view; do not require panel scrolling. */
+@media(min-width:951px){
+  .replay-stage .team-overlay{width:250px!important;height:820px!important;min-height:820px!important;max-height:820px!important;overflow:visible!important;padding:10px 12px!important}
+  .replay-stage .team-overlay>span{height:148px!important;min-height:148px!important;flex:0 0 148px!important;padding:7px 0 8px!important}
+  .replay-stage .team-overlay>span>small{min-height:52px!important;gap:5px!important}
+  .replay-stage .inventory-text{font-size:9px!important;line-height:13px!important;min-height:26px!important;max-height:26px!important;overflow:hidden!important;margin-top:3px!important;word-break:break-all!important}
+  .replay-stage .inventory-row{height:22px!important;min-height:22px!important;margin-top:2px!important;padding-top:2px!important}
+  .replay-stage .inventory-row img{width:20px!important;height:16px!important}
+}
+/* Keep the timeline below the roster instead of overlaying it. */
+@media(min-width:951px){.replay-stage .timeline{position:absolute!important;left:250px!important;right:250px!important;bottom:10px!important;height:86px!important;margin:0!important;z-index:5!important;background:#101718f5!important}}
+/* The timeline is a separate full-width module below map and POV. */
+.replay-layout>.timeline{grid-column:1 / -1!important;grid-row:auto!important;position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;width:100%!important;height:auto!important;margin:0!important;z-index:3!important;background:#101718f5!important}
+@media(min-width:951px){.replay-layout>.timeline{margin-top:0!important}}
+/* Inventory row is icon-only; text labels are intentionally hidden. */
+.replay-stage .inventory-text{display:none!important}
+/* Unified replay grid: POV, map stage and timeline share one aligned container. */
+@media(min-width:951px){
+  .replay-layout{width:1400px!important;max-width:calc(100vw - 120px)!important;grid-template-columns:270px minmax(0,1fr)!important;gap:18px!important;align-items:start!important}
+  .replay-layout>.pov-panel{grid-column:1!important;width:270px!important;min-width:270px!important;height:760px!important;max-height:760px!important}
+  .replay-layout>.replay-stage{grid-column:2!important;min-width:0!important;width:100%!important;height:760px!important;min-height:760px!important}
+  .replay-stage .team-overlay{width:190px!important;height:700px!important;min-height:700px!important;max-height:700px!important;padding:10px 10px!important}
+  .replay-stage .team-overlay>span{height:130px!important;min-height:130px!important;flex-basis:130px!important}
+  .replay-stage .radar-panel{left:205px!important;right:205px!important;width:auto!important;height:700px!important;max-width:none!important;top:12px!important}
+  .replay-stage .team-left{left:0!important}.replay-stage .team-right{right:0!important}
+  .replay-layout>.timeline{grid-column:1 / -1!important;width:100%!important;box-sizing:border-box!important}
+}
+/* Radar must remain square; only its position may adapt to the side panels. */
+@media(min-width:951px){
+  .replay-stage .radar-panel{left:50%!important;right:auto!important;transform:translateX(-50%)!important;width:700px!important;height:700px!important;aspect-ratio:1/1!important}
+}
+/* The timeline is a sibling of the card grid and shares its outer bounds. */
+.replay-page>.timeline{width:100%;max-width:none;box-sizing:border-box;margin-left:auto;margin-right:auto}
+@media(min-width:951px){
+  .replay-page>.timeline{width:1400px!important;max-width:calc(100vw - 120px)!important}
+}
+.round-track button.winner-t{background:#8a681d;color:#ffe49a;border-color:#b78c2d}.round-track button.winner-ct{background:#245c91;color:#d9edff;border-color:#438bc8}.round-track button.winner-t.active{background:#f3bf4c;color:#14100a}.round-track button.winner-ct.active{background:#4aa3ff;color:#071421}
+
+
+/* Replay HUD polish: map, rosters and timeline share a single framed control surface. */
+.replay-page{max-width:1700px;padding:0 clamp(18px,3vw,52px) 56px}
+.replay-head{padding:26px 0 18px;border-bottom:1px solid #3e433b}.replay-head:before{color:var(--color-brand)}
+.replay-controls{gap:8px}.replay-controls button{border-radius:2px;letter-spacing:.2px}.favorite-top-toggle{background:#242a24!important;border-color:#4d5543!important;color:#cfd5c6!important}.favorite-top-toggle.active{background:#c6ca4c!important;color:#161a14!important;border-color:#c6ca4c!important}
+.pov-toolbar{margin:14px 0 12px;padding:10px 12px;background:#20241f;border:1px solid #3f463b;border-left:2px solid var(--color-brand);color:#aab2a5}.pov-toolbar button{border-radius:2px!important}
+.replay-layout{gap:16px}.replay-stage{background:radial-gradient(circle at 50% 42%,#172321 0,#0c1111 63%);border:1px solid #3e4940;box-shadow:0 14px 36px #0005}.replay-stage:after{content:"";position:absolute;inset:8px;border:1px solid rgba(198,202,76,.08);pointer-events:none;z-index:1}.replay-stage .radar-panel{z-index:2;filter:drop-shadow(0 10px 20px #0008)}
+.pov-panel{background:#1b201d!important;border:1px solid #3e4940!important;border-radius:2px!important;box-shadow:0 14px 30px #0004}.pov-panel-title{color:var(--color-brand)!important;letter-spacing:1.4px;border-bottom-color:#3d463d!important}.pov-empty{color:#89938a!important;line-height:1.7}.team-overlay{background:rgba(14,20,18,.94)!important;border-color:#4b564a!important;box-shadow:0 10px 22px #0007!important}.team-overlay>b{color:#e5eadf!important;border-bottom-color:#4b564a!important}.team-overlay span{border-bottom-color:#29342d!important}.team-overlay span small .hp-bar i{background:var(--color-brand)!important}
+.timeline{padding:14px 16px!important;margin-top:16px!important;background:#1b201d!important;border:1px solid #3f493f!important;border-radius:2px!important;box-shadow:0 12px 26px #0004}.timeline-label{align-items:center;margin-bottom:12px;color:#8f9a8d!important}.timeline-label strong{color:var(--color-brand)!important}.timeline-actions{border-color:#3d493f!important;border-radius:2px!important}.round-legend{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin:-2px 0 8px;color:#89948a;font-size:10px;letter-spacing:.3px}.round-legend span{display:inline-flex;align-items:center;gap:5px}.round-legend-dot{display:inline-block;width:8px;height:8px;border-radius:1px;background:#39433d}.round-legend-dot.ct{background:#4aa3ff}.round-legend-dot.t{background:#f3bf4c}.round-legend-dot.unknown{background:#68726a}
+.round-track{height:24px!important;gap:3px!important;margin-bottom:12px!important}.round-track button{height:24px!important;min-width:0;border:1px solid #303a34!important;border-radius:2px!important;background:#26302b!important;color:#8f9b91!important;font-size:10px!important;transition:filter .16s,transform .16s,background .16s!important}.round-track button:hover{filter:brightness(1.18);transform:translateY(-1px)!important}.round-track button.winner-ct{background:#245c91!important;border-color:#438bc8!important;color:#e5f3ff!important}.round-track button.winner-t{background:#8a681d!important;border-color:#b78c2d!important;color:#ffe7a8!important}.round-track button.winner-ct.active{background:#4aa3ff!important;color:#071421!important;box-shadow:0 0 0 2px #d8edff,0 0 14px #4aa3ff88}.round-track button.winner-t.active{background:#f3bf4c!important;color:#171309!important;box-shadow:0 0 0 2px #fff0be,0 0 14px #f3bf4c88}.round-track button:not(.winner-ct):not(.winner-t).active{background:#c6ca4c!important;color:#171a14!important}.timeline>input[type=range]{height:18px;accent-color:var(--color-brand)}
+@media(max-width:950px){.replay-page{padding-left:12px;padding-right:12px}.round-legend{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){.round-track button:hover{transform:none!important}}
+
+/* Stable roster geometry: each team always has one header row and five equal
+   player slots. The player card owns its own fixed identity/loadout/vitals/
+   equipment rows, so inventory updates cannot reflow the map or neighbours. */
+.replay-stage .team-overlay {
+  display: grid !important;
+  grid-template-rows: 32px repeat(5, minmax(0, 1fr)) !important;
+  align-content: stretch !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  transform: none !important;
+}
+.replay-stage .team-overlay > b {
+  min-width: 0;
+  min-height: 0;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+.replay-stage .replay-player-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 112px;
+  overflow: hidden;
+}
+.replay-stage .player-equipment {
+  overflow: hidden;
+}
+.replay-stage .player-equipment-slot {
+  min-width: 0;
+}
+@media (max-width: 950px) {
+  .replay-stage .team-overlay {
+    height: 620px !important;
+    max-height: 620px !important;
+  }
+}
+
+.kill-weapon-label{color:#d7e4df;font-size:10px;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+
+.radar-effects-note{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:2;max-width:90%;padding:4px 8px;border:1px solid #665f40;background:#151c1ceF;color:#e5cb84;font-size:10px;text-align:center;pointer-events:none}
+
+/* One in-flow command bar; saved rounds are managed by the global library. */
+.replay-command-bar{display:flex;align-items:center;gap:24px;height:auto;min-height:76px;box-sizing:border-box;margin:0 auto 12px;padding:14px 0;border-bottom:1px solid var(--color-border,#474941);background:transparent;backdrop-filter:none;color:var(--color-text-primary,#e9e7e4);letter-spacing:0}
+.replay-context{flex:0 0 166px;min-width:0}
+.replay-context h1{margin:0 0 5px;font:700 20px "Barlow Condensed",Inter,sans-serif;line-height:1.1;letter-spacing:0}
+.replay-context>span{display:block;color:var(--color-text-secondary,#9b9c94);font-size:11px;line-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
+.pov-selection{display:flex;align-items:center;gap:12px;flex:1;min-width:0;height:36px;padding-left:20px;border-left:1px solid var(--color-border,#474941)}
+.pov-selection-count{display:inline-flex;align-items:center;gap:5px;flex:none;color:var(--color-text-secondary,#9b9c94);font-size:12px;white-space:nowrap}
+.pov-selection-count strong{font-weight:600;color:var(--color-text-primary,#e9e7e4);min-width:14px;text-align:center;font-variant-numeric:tabular-nums}
+.pov-selection-names{flex:1;min-width:0;color:var(--color-text-primary,#e9e7e4);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:20px}
+.replay-command-actions{display:flex;gap:8px;flex:none;align-items:center}
+.replay-command-actions button,.pov-clear-selection{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;box-sizing:border-box;padding:0 12px;border:1px solid var(--color-border,#474941);border-radius:2px;background:var(--color-surface,#212220);color:var(--color-text-primary,#e9e7e4);font:600 12px Inter,sans-serif;letter-spacing:0;white-space:nowrap;cursor:pointer}
+.replay-command-actions .pov-save-selection{width:156px;background:var(--color-brand,#c6ca4c);border-color:var(--color-brand,#c6ca4c);color:#191a19}
+.replay-command-actions .pov-save-selection.saved{background:transparent;border-color:#7d8040;color:var(--color-brand,#c6ca4c);opacity:1}
+.replay-command-actions .replay-back{width:132px}
+.replay-back .ef-icon{transform:rotate(180deg)}
+.pov-clear-selection{flex:0 0 32px;width:32px;padding:0;background:transparent;color:var(--color-text-secondary,#9b9c94);border-color:transparent}
+.replay-command-actions button:disabled,.pov-clear-selection:disabled{opacity:.4;cursor:default}
+.replay-command-actions button:not(:disabled):hover,.pov-clear-selection:not(:disabled):hover{filter:brightness(1.12);border-color:var(--color-brand,#c6ca4c)}
+.replay-command-actions button:focus-visible,.pov-clear-selection:focus-visible{outline:2px solid var(--color-brand,#c6ca4c);outline-offset:3px}
+.replay-page>.replay-status{position:static;display:flex;align-items:center;gap:8px;box-sizing:border-box;height:28px;min-height:28px;margin:0 auto 8px;overflow:auto;visibility:hidden;font-size:12px;line-height:18px;color:var(--color-text-secondary,#9b9c94);letter-spacing:0}
+.replay-page>.replay-status.visible{visibility:visible}
+@media(min-width:951px){.replay-command-bar,.replay-page>.replay-status{width:1400px;max-width:calc(100vw - 120px)}}
+@media(max-width:950px){.replay-command-bar{gap:14px;flex-wrap:wrap}.replay-context{flex:1}.replay-command-actions{margin-left:auto}.pov-selection{order:3;flex-basis:100%;padding-left:0;border-left:0;border-top:1px solid var(--color-border,#474941);padding-top:8px;height:44px}}
+@media(max-width:520px){.replay-command-bar{gap:10px}.replay-context{flex-basis:100%}.replay-command-actions{width:100%;margin-left:0}.replay-command-actions button{flex:1;min-width:0}.pov-selection{gap:8px}}
+
+/* POV recordings use the full replay width. These selectors own the video
+   geometry so legacy fixed heights cannot crop the frame. */
+.replay-page .replay-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+.replay-page .replay-layout > .replay-stage {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+}
+.replay-page > .pov-panel {
+  width: 100% !important;
+  max-width: 1400px !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 18px auto 0 !important;
+  position: static !important;
+  overflow: visible;
+  background: var(--color-surface, #212220) !important;
+  border-color: var(--color-border, #474941) !important;
+  box-shadow: none;
+}
+.replay-page > .pov-panel .pov-panel-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.pov-panel-heading { display: flex; align-items: center; gap: 12px; }
+.pov-panel-heading small { color: var(--color-text-secondary); font-size: 12px; font-weight: 400; }
+.pov-panel-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.replay-page > .pov-panel .pov-video-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: none;
+  grid-auto-flow: row;
+  grid-auto-columns: auto;
+  gap: 16px;
+  padding: 18px;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  scroll-snap-type: none;
+}
+.replay-page > .pov-panel .pov-video-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border, #474941);
+  border-radius: 2px;
+  background: #141512;
+}
+.replay-page > .pov-panel .pov-video-card.active { border-color: var(--color-brand); }
+.replay-page > .pov-panel .pov-video-card .pov-video {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 16 / 9 !important;
+  object-fit: contain !important;
+  background: #050505;
+  border: 0;
+  border-radius: 0;
+}
+.replay-page > .pov-panel .pov-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--color-border-soft, #363831);
+}
+.replay-page > .pov-panel .pov-file-label {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: static;
+}
+.pov-audio-label { flex: none; color: var(--color-brand); font-size: 11px; }
+.replay-page > .pov-panel .pov-empty { padding: 32px 18px; font-size: 13px; }
+
+@media (min-width: 951px) {
+  .replay-page > .pov-panel { max-width: calc(100vw - 120px) !important; width: 1400px !important; }
+}
+@media (max-width: 950px) {
+  .replay-page > .pov-panel .pov-video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; }
+}
+@media (max-width: 580px) {
+  .replay-page > .pov-panel .pov-video-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Final replay composition: the POV rail stays beside the map.  The rail is
+   intentionally a readable vertical surface with its own scroll, while the
+   map keeps the full tactical frame and both rosters visible. */
+@media (min-width: 951px) {
+  .replay-page {
+    display: grid !important;
+    grid-template-columns: 270px minmax(0, 1fr) !important;
+    column-gap: 18px !important;
+    row-gap: 0 !important;
+    max-width: 1700px !important;
+    box-sizing: border-box !important;
+  }
+  .replay-page > .replay-command-bar,
+  .replay-page > .replay-status {
+    grid-column: 1 / -1 !important;
+  }
+  .replay-page > .replay-command-bar { grid-row: 1 !important; }
+  .replay-page > .replay-status { grid-row: 2 !important; }
+  .replay-page > .replay-layout {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  .replay-page > .replay-layout > .replay-stage {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 760px !important;
+    min-height: 760px !important;
+    max-height: 760px !important;
+  }
+  .replay-page > .pov-panel {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    align-self: start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: 760px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-color: #697043 #151a17;
+  }
+  .replay-page > .pov-panel .pov-panel-title {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 3 !important;
+    background: #1b201d !important;
+    padding: 10px 10px !important;
+  }
+  .replay-page > .pov-panel .pov-panel-heading {
+    display: block !important;
+    line-height: 1.45 !important;
+  }
+  .replay-page > .pov-panel .pov-panel-heading small {
+    display: block !important;
+    margin-top: 3px !important;
+    font-size: 11px !important;
+  }
+  .replay-page > .pov-panel .pov-panel-actions {
+    width: auto !important;
+    margin-top: 0 !important;
+  }
+  .replay-page > .pov-panel .pov-panel-actions .ef-button {
+    min-height: 30px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
+  }
+  .replay-page > .pov-panel .pov-video-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: none !important;
+    grid-auto-flow: row !important;
+    gap: 12px !important;
+    padding: 12px !important;
+    overflow: visible !important;
+  }
+  .replay-page > .pov-panel .pov-video-card {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .replay-page > .pov-panel .pov-video-card .pov-video {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: contain !important;
+  }
+  .replay-page > .pov-panel .pov-card-footer {
+    min-height: 40px !important;
+    padding: 7px 8px !important;
+  }
+  .replay-page > .timeline {
+    grid-column: 1 / -1 !important;
+    grid-row: 4 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 16px 0 0 !important;
+  }
+  .replay-page > .replay-layout .replay-stage .radar-panel {
+    width: min(700px, calc(100% - 300px)) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    top: 12px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+  .replay-page > .replay-layout .replay-stage .team-overlay {
+    top: 12px !important;
+    width: 170px !important;
+    height: 700px !important;
+    min-height: 700px !important;
+    max-height: 700px !important;
+    padding: 10px 8px !important;
+  }
+  .replay-page > .replay-layout .replay-stage .team-left { left: 10px !important; }
+  .replay-page > .replay-layout .replay-stage .team-right { right: 10px !important; left: auto !important; }
+}
+
+@media (min-width: 951px) and (max-width: 1200px) {
+  .replay-page {
+    grid-template-columns: 250px minmax(0, 1fr) !important;
+    column-gap: 14px !important;
+  }
+  .replay-page > .replay-layout > .replay-stage {
+    height: 700px !important;
+    min-height: 700px !important;
+    max-height: 700px !important;
+  }
+  .replay-page > .pov-panel {
+    height: auto !important;
+    max-height: 700px !important;
+  }
+  .replay-page > .replay-layout .replay-stage .radar-panel {
+    width: min(620px, calc(100% - 250px)) !important;
+  }
+  .replay-page > .replay-layout .replay-stage .team-overlay {
+    width: 140px !important;
+    height: 620px !important;
+    min-height: 620px !important;
+    max-height: 620px !important;
+  }
+}
+
+@media (max-width: 950px) {
+  .replay-page {
+    display: block !important;
+  }
+  .replay-page > .pov-panel {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 14px 0 0 !important;
+  }
+}
+
+/* The thumbnails share the main transport. No repeated native controls or
+   footer rows: the picture opens the view and the name sits on a bottom mask. */
+  .replay-page > .pov-panel .pov-video-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+  .replay-page > .pov-panel .pov-video-card {
+    position: relative !important;
+    min-width: 0 !important;
+    aspect-ratio: 16 / 9 !important;
+    overflow: hidden !important;
+    background: #080c0b !important;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+  .replay-page > .pov-panel .pov-video-card:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+  .replay-page > .pov-panel .pov-video-card:hover { border-color: var(--color-brand); }
+  .replay-page > .pov-panel .pov-video-card .pov-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: contain !important;
+    background: #050505 !important;
+  }
+  .replay-page > .pov-panel .pov-card-footer {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    min-height: 0 !important;
+    padding: 14px 8px 6px !important;
+    border: 0 !important;
+    background: linear-gradient(180deg, transparent, rgba(4,8,7,.88)) !important;
+    pointer-events: none !important;
+  }
+  .replay-page > .pov-panel .pov-file-label {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #f0f3e9 !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    text-shadow: 0 1px 3px #000 !important;
+  }
+  .replay-page > .pov-panel .pov-audio-label {
+    margin-left: auto !important;
+    color: var(--color-brand) !important;
+    font-size: 10px !important;
+    text-shadow: 0 1px 3px #000 !important;
+  }
+
+@media (min-width: 951px) and (max-width: 1200px) {
+  .replay-page > .pov-panel .pov-panel-title { padding: 10px !important; }
+}
+
+@media (max-width: 950px) {
+  .replay-page > .pov-panel .pov-video-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+/* Fullscreen owns the complete POV stage, so its tactical map stays clickable. */
+.pov-overlay { position:absolute !important; inset:0 !important; z-index:30 !important; padding:18px; box-sizing:border-box; }
+.pov-overlay-actions { position:absolute; top:12px; right:12px; display:flex; gap:8px; z-index:4; }
+.pov-overlay-actions .pov-overlay-close { position:static; }
+.pov-overlay video::-webkit-media-controls-fullscreen-button { display:none; }
+.pov-overlay:fullscreen { position:fixed !important; width:100%; height:100%; padding:0; box-sizing:border-box; }
+.pov-overlay:fullscreen .pov-mini-map { z-index:5; pointer-events:auto; }
+.pov-mini-map { position:absolute; left:18px; top:18px; width:clamp(150px,15vw,190px); z-index:3; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; box-sizing:border-box; }
+.pov-mini-map-heading { display:flex; align-items:center; justify-content:space-between; gap:6px; margin:0 0 5px; font-size:11px; color:var(--color-text-primary); text-shadow:0 1px 3px #000; }
+.pov-mini-map-heading span { font-size:10px; color:var(--color-text-secondary); }
+.pov-mini-map-stage { position:relative; width:100%; aspect-ratio:1; background:#0b1112cc; box-shadow:0 2px 10px #0007; }
+.pov-mini-map-stage canvas { display:block; width:100%; height:100%; }
+.pov-mini-map-status { position:absolute; inset:0; display:grid; place-items:center; padding:12px; font-size:12px; color:var(--color-text-secondary); text-align:center; }
+.pov-mini-map-players { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+.pov-mini-map-players button { flex:1; min-width:20px; height:21px; padding:0 3px; border:0; border-radius:2px; background:#111a18b8; color:var(--color-text-primary); cursor:pointer; }
+.pov-mini-map-players button.active,.pov-mini-map-players button:hover { background:#c6ca4cdd; color:#101613; }
+.pov-mini-map-players button:focus-visible { outline:2px solid var(--color-brand); outline-offset:2px; }
+@media(max-width:650px), (max-height:550px) {
+  .pov-mini-map { left:10px; top:10px; width:clamp(135px,24vw,165px); }
+  .pov-mini-map-heading { font-size:10px; }
+  .pov-mini-map-heading span { display:none; }
+}
+
+/* Keep the main timeline thumb draggable while the replay clock is updating. */
+.timeline > input[type="range"] { cursor:grab; touch-action:none; pointer-events:auto; position:relative; z-index:2; }
+.timeline > input[type="range"]:active { cursor:grabbing; }
+
+.nuke-lower-inset{position:absolute;z-index:5;top:16px;left:16px;width:50%;max-width:390px;aspect-ratio:1.41;border:0;background:transparent;box-shadow:none;box-sizing:border-box}.nuke-lower-inset canvas{display:block;width:100%;height:100%;opacity:.76}.nuke-lower-inset .nuke-floor-label{position:absolute;z-index:2;top:6px;left:6px;padding:3px 6px;background:#111a18cc;border:0;color:#e9e7e4;font:700 10px Inter;pointer-events:none}@media(max-width:700px){.nuke-lower-inset{top:10px;left:10px;width:42%;min-width:140px}.nuke-lower-inset .nuke-floor-label{top:4px;left:4px;font-size:9px}}
+
+
+/* Transport sits directly above the round selector. */
+.replay-center-controls{position:relative;z-index:12;display:flex;align-items:center;justify-content:center;gap:10px;margin:-2px auto 12px;pointer-events:auto}
+.replay-center-controls button{pointer-events:auto}
+.replay-center-controls button{animation:none!important;transition:none!important}
+.round-track button{animation:none!important}
+
+/* Keep the transport strip compact so it does not compete with the map. */
+.replay-page>.timeline{padding:8px 12px!important}
+.replay-page>.timeline .timeline-label{margin-bottom:6px!important}
+.replay-page>.timeline .round-legend{margin:-1px 0 5px!important}
+.replay-page>.timeline .round-track{height:18px!important;margin-bottom:7px!important}
+.replay-page>.timeline .round-track button{height:18px!important;font-size:9px!important}
+.replay-page>.timeline .timeline-scrubber-wrap{padding-top:10px;padding-bottom:10px}
+
+/* Put the killfeed in the stage's right gutter instead of over the radar. */
+.replay-stage .radar-panel>.killfeed{right:-240px}
+@media(max-width:950px){.replay-stage .radar-panel>.killfeed{right:6px}}
+.center-play-button{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#c6ca4c;color:#101613;border:1px solid #eff2b6;box-shadow:0 4px 12px #0007;cursor:pointer;transition:none}
+.center-play-button:hover{filter:brightness(1.08)}
+.round-nav-button{width:34px;height:34px;border-radius:3px;display:grid;place-items:center;background:#101817d9;color:#e8f0ea;border:1px solid #63736b;cursor:pointer;box-shadow:0 3px 10px #0006}
+.round-nav-button:hover:not(:disabled){background:#263d38;color:#c6ca4c;border-color:#c6ca4c}
+.round-nav-button:disabled,.center-play-button:disabled{opacity:.35;cursor:default}
+.timeline-label{justify-content:center!important;text-align:center!important}
+.timeline-actions{display:none!important}
+.timeline>input[type="range"]{display:block!important;width:100%;height:8px;margin:12px 0 0;accent-color:var(--color-brand);cursor:grab;touch-action:none}
+.timeline-label strong{display:none!important}
+@media(max-width:700px){.replay-center-controls{gap:7px}.center-play-button{width:40px;height:40px}.round-nav-button{width:32px;height:32px}}
+.pov-overlay:fullscreen,.pov-overlay:-webkit-full-screen{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;padding:0!important;background:#050707!important}
+.pov-overlay:fullscreen video,.pov-overlay:-webkit-full-screen video{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important}
+.pov-overlay video{position:relative;z-index:1}.pov-overlay video::-webkit-media-controls-loading-panel{display:none!important}
+.pov-overlay-host{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:1;overflow:hidden;background:#050707}.pov-overlay-host>.pov-promoted-video{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}
+.pov-video-placeholder{display:block;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#222923,#151a17);border:1px solid rgba(198,202,76,.45)}.pov-video-card.active{position:relative}.pov-video-card.active:after{content:'当前视角 · 已放大';position:absolute;inset:0;display:grid;place-items:center;background:rgba(15,20,17,.72);color:var(--color-brand);font:600 10px/1 Inter;letter-spacing:1px;pointer-events:none}@keyframes pov-promote-in{from{opacity:.25;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+
+.timeline-scrubber-wrap{position:relative;padding-top:18px;padding-bottom:18px}
+.timeline-scrubber-wrap>.timeline-scrubber{display:block!important;width:100%;height:8px;margin:0!important;accent-color:var(--color-brand);cursor:grab;touch-action:none;position:relative;z-index:2}
+.timeline-scrubber-wrap>.timeline-scrubber:active{cursor:grabbing}
+.grenade-marker-legend{position:absolute;top:0;right:0;display:flex;gap:10px;color:#879592;font:10px/1 Inter,sans-serif;white-space:nowrap}
+.grenade-marker-legend span{display:inline-flex;align-items:center;gap:4px}
+.grenade-marker-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.grenade-marker-dot.ct{background:#4aa3ff;box-shadow:0 0 5px #4aa3ff99}
+.grenade-marker-dot.t{background:#f3bf4c;box-shadow:0 0 5px #f3bf4c99}
+.grenade-marker-dot.c4{background:#f04444;box-shadow:0 0 5px #f0444499}
+.grenade-markers{position:absolute;left:0;right:0;height:18px;pointer-events:none;z-index:3}
+.grenade-markers-above{top:7px}.grenade-markers-below{bottom:5px}
+.grenade-marker{position:absolute;top:1px;width:19px;height:18px;padding:1px;border:1px solid currentColor;border-radius:3px;background:#101817e8;transform:translateX(-50%);cursor:pointer;pointer-events:auto;box-shadow:0 0 0 1px #101817,0 0 6px currentColor;transition:transform .12s,filter .12s}
+.grenade-marker-icon{display:block;width:100%;height:100%;background:currentColor;mask-position:center;mask-repeat:no-repeat;mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain}
+.grenade-marker:hover,.grenade-marker:focus-visible{transform:translateX(-50%) scale(1.25);filter:brightness(1.2);outline:none;z-index:4}
+.grenade-marker.team-ct{color:#4aa3ff}.grenade-marker.team-t{color:#f3bf4c}.grenade-marker.team-c4{color:#f04444}.grenade-marker.team-unknown{color:#97a39d}
+@media(max-width:700px){.grenade-marker-legend{font-size:9px;gap:7px}.grenade-marker{width:7px;height:7px}}
+
+/* Keep the transport surface geometrically fixed while the replay clock and
+   POV thumbnails update.  The old percentage widths plus flex gaps could
+   make the round strip wider than its parent; the resulting horizontal
+   reflow moved the centre controls under the pointer and looked like a
+   constantly flashing set of buttons. */
+.replay-page > .timeline {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.replay-page > .timeline .replay-center-controls {
+  width: 100% !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  transform: none !important;
+}
+.replay-page > .timeline .round-track {
+  display: grid !important;
+  grid-template-columns: repeat(var(--round-count, 1), minmax(0, 1fr));
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.replay-page > .timeline .round-track button {
+  flex: none !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+.replay-page > .timeline .round-track button:hover,
+.replay-page > .timeline .round-track button:active {
+  filter: none !important;
+  transform: none !important;
+}
+.replay-page > .timeline .replay-center-controls button:hover,
+.replay-page > .timeline .replay-center-controls button:active {
+  transform: none !important;
+}
+
+/* Reference HUD animation applied to the replay stage. The controller in
+   endfieldHudAnimation.js owns time; these rules only define the visual shell. */
+.replay-hud {
+  position: absolute;
+  z-index: 4;
+  top: 38px;
+  left: 50%;
+  width: 420px;
+  height: 100px;
+  transform: translateX(-50%);
+  color: #edf2e9;
+  font-family: Inter, "Microsoft YaHei", sans-serif;
+  pointer-events: none;
+  isolation: isolate;
+  filter: drop-shadow(0 12px 20px #0008);
+}
+.replay-hud .hud-pill {
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 420px;
+  height: 60px;
+  overflow: hidden;
+  border: 1px solid #d9e4bb18;
+  border-radius: 30px;
+  background: linear-gradient(105deg, #262d26f5, #161d1aeF 70%);
+  box-shadow: inset 0 0 0 1px #ffffff08, 0 0 0 1px #0b1111;
+}
+.replay-hud .hud-icon {
+  position: absolute;
+  left: 16px;
+  top: 34px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid #dce9c4;
+  border-radius: 50%;
+  background: #dfe8d8;
+  color: #182019;
+}
+.replay-hud .hud-title {
+  position: absolute;
+  top: 23px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+}
+.replay-hud .hud-title small {
+  display: block;
+  color: #abb8a4;
+  font: 9px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 1.8px;
+}
+.replay-hud .hud-title strong {
+  display: block;
+  color: #edf2e9;
+  font: 600 22px/1.3 "Barlow Condensed", Inter, sans-serif;
+  letter-spacing: 1.5px;
+}
+.replay-hud .hud-values {
+  position: absolute;
+  inset: 20px 13px 20px 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.replay-hud .hud-primary {
+  color: #edf2e9;
+  font: 600 23px/1 Inter, "Microsoft YaHei", sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.replay-hud .hud-primary > span {
+  color: #a7b3a0;
+  font-size: 12px;
+  font-weight: 400;
+}
+.replay-hud .hud-right {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.replay-hud .hud-percent {
+  max-width: 105px;
+  overflow: hidden;
+  color: #d2dc9a;
+  font: 600 12px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.replay-hud .hud-badge {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  place-items: center;
+  border: 1px solid #c6ca4c80;
+  border-radius: 50%;
+  background: #101817;
+  color: #c6ca4c;
+  font: 700 8px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .6px;
+}
+.replay-hud .ripples {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+}
+.replay-hud .ripples i {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 200px;
+  height: 200px;
+  border: 3px solid #9aa88c;
+  border-radius: 50%;
+  opacity: 0;
+}
+.replay-hud .ripples i:first-child {
+  top: -75px;
+  left: -75px;
+  width: 150px;
+  height: 150px;
+  border: 0;
+  background: #a1ad9360;
+}
+.replay-hud .ripples i:last-child {
+  top: -130px;
+  left: -130px;
+  width: 260px;
+  height: 260px;
+}
+.replay-hud.loading { opacity: .7; }
+@media (max-width: 950px) {
+  .replay-hud { top: 24px; transform: translateX(-50%) scale(.82); transform-origin: top center; }
+}
+@media (max-width: 520px) {
+  .replay-hud { transform: translateX(-50%) scale(.68); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .replay-hud { filter: none; }
+}
+
+/* Compact round-state HUD: it occupies the original countdown slot and only
+   changes when the semantic round phase changes. */
+.replay-stage .radar-panel > .replay-hud {
+  top: 14px;
+  left: 50%;
+  width: 250px;
+  height: 38px;
+  z-index: 8;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 7px 12px #0008);
+}
+.replay-stage .radar-panel > .replay-hud .hud-pill {
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 38px;
+  border-radius: 19px;
+  border-color: #d9e4bb24;
+  background: linear-gradient(105deg, #182320 0%, #101817 72%);
+}
+.replay-stage .radar-panel > .replay-hud .hud-icon {
+  left: 8px;
+  top: 7px;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: #dfe8d8;
+}
+.replay-stage .radar-panel > .replay-hud .hud-title { display: none; }
+.replay-stage .radar-panel > .replay-hud .hud-values {
+  inset: 0 7px 0 41px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.replay-stage .radar-panel > .replay-hud .hud-phase {
+  flex: none;
+  color: #96aaa0;
+  font: 700 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .4px;
+  white-space: nowrap;
+}
+.replay-stage .radar-panel > .replay-hud .hud-primary {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: #edf2e9;
+  font: 700 13px/1 Inter, "Microsoft YaHei", sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.replay-stage .radar-panel > .replay-hud.loading { opacity: 1; }
+.replay-stage .radar-panel > .replay-hud .hud-right { display: none; }
+.replay-stage .radar-panel > .replay-hud .hud-badge {
+  width: 30px;
+  height: 21px;
+  border-radius: 4px;
+  background: #101817;
+  color: #c6ca4c;
+  font: 700 7px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .4px;
+}
+.replay-stage .radar-panel > .replay-hud.status-bomb .hud-icon,
+.replay-stage .radar-panel > .replay-hud.status-bomb .hud-badge {
+  color: #ff7583;
+  border-color: #a54655;
+}
+.replay-stage .radar-panel > .replay-hud.status-bomb .hud-primary { color: #ff7583; }
+.replay-stage .radar-panel > .replay-hud.status-defused .hud-icon,
+.replay-stage .radar-panel > .replay-hud.status-defused .hud-primary { color: #c6ca4c; }
+.replay-stage .radar-panel > .replay-hud.status-buy .hud-primary { color: #d2dc9a; }
+.replay-stage .radar-panel > .replay-hud .ripples i { border-width: 1px; }
+@media (max-width: 520px) {
+  .replay-stage .radar-panel > .replay-hud { transform: translateX(-50%) scale(.86); transform-origin: top center; }
+}
+
+/* Keep the desktop killfeed in the stage gutter while allowing it to escape the
+   square radar panel; the panel itself clips canvas pixels, which previously
+   made the feed disappear completely. */
+@media(min-width:951px){
+  .replay-stage .radar-panel{overflow:visible!important;z-index:2!important}
+  .replay-stage .radar-panel>.killfeed{right:-110px!important;z-index:4}
+}
+@media(max-width:950px){
+  .replay-stage .radar-panel>.killfeed{right:6px!important;z-index:8}
+}
+
+/* Use the bundled CS2 C4 artwork in the compact HUD instead of the generic
+   pulse glyph. The dark tile keeps the white game icon legible. */
+.replay-stage .radar-panel > .replay-hud .hud-icon{
+  background:#111817!important;
+  border-color:#3d6657!important;
+  color:#dfe8d8!important;
+}
+.replay-stage .radar-panel > .replay-hud .hud-game-icon{
+  display:block;
+  width:16px;
+  height:16px;
+  object-fit:contain;
+}
+.replay-stage .radar-panel > .replay-hud.status-bomb .hud-icon{
+  border-color:#a54655!important;
+}
+
+.replay-stage .radar-panel > .replay-hud.status-buy .hud-icon{
+  color:#d2dc9a!important;
+}
+
+/* Keep the three event lanes visually distinct: smoke/fire above, flash/HE
+   below, and bomb plant/defuse on the scrubber line itself. */
+.replay-page > .timeline .timeline-scrubber-wrap{
+  padding-top:18px!important;
+  padding-bottom:18px!important;
+}
+.replay-page > .timeline .grenade-markers-above{top:-2px}
+.replay-page > .timeline .grenade-markers-middle{top:13px}
+.replay-page > .timeline .grenade-markers-below{bottom:-2px}
+.round-counter{
+  margin-left:8px;
+  color:#dfe8df;
+  font:700 11px/1 Inter,"Microsoft YaHei",sans-serif;
+  white-space:nowrap;
+}
+
+.grenade-marker.team-kill{color:#c6ca4c}
+.grenade-marker.team-death{color:#ff6b65}
+.grenade-marker>.ef-icon{display:block;margin:auto}
+.pov-cache-note,.pov-overlay-cache-note{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#191a19;color:#e9e7e4;font:11px/1.5 Inter,"Microsoft YaHei",sans-serif;text-align:center;padding:20px}
+.pov-cache-note{bottom:28px;pointer-events:none}
+.pov-cache-note>.ef-button{pointer-events:auto}
+.pov-overlay-cache-note{z-index:2;inset:35% 25% auto;background:#212220e8;border:1px solid #474941}
+.pov-overlay-cache-note>.ef-button,.pov-cache-note>.ef-button{height:28px;min-height:28px}
+
+/* Keep transport metadata on the two sides while the three playback buttons
+   stay centered as a unit. */
+.replay-page > .timeline .replay-center-controls{
+  position:relative;
+  min-height:42px;
+}
+.replay-page > .timeline .timeline-clock,
+.replay-page > .timeline .round-counter{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  color:#8f9b91;
+  font:600 10px/1 Inter,"Microsoft YaHei",sans-serif;
+  white-space:nowrap;
+}
+.replay-page > .timeline .timeline-clock{left:0}
+.replay-page > .timeline .round-counter{right:0;margin-left:0}
+@media(max-width:700px){
+  .replay-page > .timeline .timeline-clock{left:4px}
+  .replay-page > .timeline .round-counter{right:4px}
+}
+
+/* Compact transport metadata: round on the left, elapsed time on the right. */
+.replay-page > .timeline .timeline-clock,
+.replay-page > .timeline .round-counter{
+  font-size:11px;
+  font-weight:700;
+  color:#dfe8df;
+}
+.replay-page > .timeline .round-counter{
+  left:0;
+  right:auto;
+}
+.replay-page > .timeline .timeline-clock{
+  left:auto;
+  right:0;
+}
+
+/* Keep the round/time labels close to the centered playback controls. */
+.replay-page > .timeline .round-counter{left:calc(50% - 190px);right:auto}
+.replay-page > .timeline .timeline-clock{right:calc(50% - 190px);left:auto}
+@media(max-width:700px){
+  .replay-page > .timeline .round-counter{left:calc(50% - 150px)}
+  .replay-page > .timeline .timeline-clock{right:calc(50% - 150px)}
+}

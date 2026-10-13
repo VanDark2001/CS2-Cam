@@ -1,0 +1,55 @@
+name: Build Windows portable release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.12.10'
+      - uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-go@v7.0.0
+        with:
+          go-version: '1.24.x'
+      - name: Install and build
+        shell: pwsh
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $true
+          python -m pip install -r requirements-desktop.txt
+          npm ci --prefix web
+          npm ci --prefix electron
+          npm run build --prefix web
+          mvn -q -DskipTests -f server/pom.xml package
+          Push-Location tools/replay_positions
+          go build -o replay_positions.exe .
+          Pop-Location
+          node --test electron/updater.test.cjs
+          python -m unittest discover -s tests -p test_update_installer.py
+          python tools/build_portable.py --skip-build --java-home "$env:JAVA_HOME" --jar server/target/demo-show-0.0.1-SNAPSHOT.jar --zip
+      - name: Publish stable package
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $version = (Get-Content electron/package.json -Raw | ConvertFrom-Json).version
+          if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag and package version must match' }
+          $package = Get-ChildItem .cache/portable-builds -Recurse -Filter "CS2-Cam-$version-win-x64.zip" | Select-Object -First 1
+          $existingRelease = gh release view "v$version" --repo "$env:GITHUB_REPOSITORY" --json isDraft 2>$null
+          if ($LASTEXITCODE -eq 0 -and -not ($existingRelease | ConvertFrom-Json).isDraft) {
+            Write-Output "Stable release v$version is already published; preserving its verified assets."
+            exit 0
+          }
+          gh release create "v$version" $package.FullName "$($package.FullName).sha256" --title "CS2 Cam $version" --generate-notes --latest
