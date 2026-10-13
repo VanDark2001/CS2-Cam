@@ -28,8 +28,8 @@ function retryFavorites() { try { mergeFavorites(); state.message = '收藏已�
 <style scoped>
 .package-controls { min-width: 0; }
 .package-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
-.package-status { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 10px; color: var(--color-text-secondary); font-size: 12px; line-height: 1.5; max-width: 620px; overflow-wrap: anywhere; }
-.package-status.error { color: var(--color-danger); }
-.package-status progress { width: 120px; height: 6px; accent-color: var(--color-brand); }
+.package-status { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 10px; color:var(--color-text-secondary); font-size: 12px; line-height: 1.5; max-width: 620px; overflow-wrap: anywhere; }
+.package-status.error { color:var(--color-danger); }
+.package-status progress { width: 120px; height: 6px; accent-color:var(--color-brand); }
 @media (max-width: 700px) { .package-buttons, .package-status { justify-content: flex-start; } }
 </style>

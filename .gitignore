@@ -83,3 +83,8 @@ data/
 *.sqlite3-shm
 *.sqlite3-journal
 *.sqlite3.migration-*.tmp*
+
+# Local handoff material must never be committed or published.
+/AGENTS.md
+/docs/design/
+/docs/PROJECT_MAP.md

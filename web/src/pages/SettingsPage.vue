@@ -4,12 +4,23 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import EndfieldIcon from '../components/EndfieldIcon.vue'
 import { API, assetUrl } from '../lib/presentation'
+import { themeMode, activeTheme, themeDescription, themeStorageError, setThemeMode } from '../lib/theme'
 import projectInfo from '../../../electron/release-config.json'
 
+function themeKeydown(event) {
+  const keys=['light','dark','auto']; const index=keys.indexOf(themeMode.value)
+  let next
+  if (['ArrowRight','ArrowDown'].includes(event.key)) next=(index+1)%3
+  else if (['ArrowLeft','ArrowUp'].includes(event.key)) next=(index+2)%3
+  else if (event.key==='Home') next=0
+  else if (event.key==='End') next=2
+  else return
+  event.preventDefault();setThemeMode(keys[next]);event.currentTarget.querySelector(`[data-theme-option="${keys[next]}"]`)?.focus()
+}
 const router = useRouter()
 const desktop = typeof window !== 'undefined' ? window.csdemoDesktop?.settings : null
 const updateApi = typeof window !== 'undefined' ? window.csdemoDesktop?.updates : null
-const updateState = ref({available:false,currentVersion:'0.1.1',autoCheck:true,status:'idle',message:'',progress:0,hasUpdate:false})
+const updateState = ref({available:false,currentVersion:'0.1.2',autoCheck:true,status:'idle',message:'',progress:0,hasUpdate:false})
 const updateError=ref(''),avatarFailed=ref(false)
 const updateBusy=computed(()=>['checking','downloading','preparing'].includes(updateState.value.status))
 let unsubscribeUpdates=null
@@ -21,7 +32,7 @@ const loading = ref(true)
 const saving = ref('')
 const error = ref('')
 const notice = ref('')
-const state = ref({ available: false, version: '0.1.1', recording: {}, tools: [] })
+const state = ref({ available: false, version: '0.1.2', recording: {}, tools: [] })
 const matchCount = ref(0)
 const clearing = ref(false)
 const toolLabels = { CS2_EXE: 'CS2', HLAE_EXE: 'HLAE', FFMPEG_EXE: 'FFmpeg', FFPROBE_EXE: 'FFprobe' }
@@ -36,7 +47,7 @@ async function load() {
   error.value = ''
   try {
     const [settings, matches] = await Promise.all([
-      desktop ? desktop.get() : Promise.resolve({ available: false, version: '0.1.1', recording: {}, tools: [] }),
+      desktop ? desktop.get() : Promise.resolve({ available: false, version: '0.1.2', recording: {}, tools: [] }),
       fetch(`${API}/matches`).then(response => response.ok ? response.json() : [])
     ])
     state.value = settings
@@ -123,6 +134,17 @@ onUnmounted(()=>unsubscribeUpdates?.())
       <div><div class="eyebrow">SYSTEM / CONFIGURATION</div><h1>设置</h1><p>CS2 Cam · 录制环境、版本与本地数据管理</p></div>
       <div class="settings-identity"><span class="settings-code">LOCAL CONTROL // 02</span><b>v{{ state.version }}</b></div>
     </section>
+    <section class="settings-card settings-appearance" aria-labelledby="appearance-heading">
+      <header><div><small>APPEARANCE / DAY &amp; NIGHT</small><h2 id="appearance-heading">外观模式</h2></div><b class="settings-version">{{activeTheme === 'light' ? 'LIGHT' : 'DARK'}}</b></header>
+      <div class="settings-body">
+        <div class="appearance-options" role="radiogroup" aria-label="外观模式" @keydown="themeKeydown">
+          <button v-for="item in [{key:'light',label:'浅色',code:'LIGHT'},{key:'dark',label:'深色',code:'DARK'},{key:'auto',label:'自动',code:'AUTO'}]" :key="item.key" class="ef-button" role="radio" :data-theme-option="item.key" :tabindex="themeMode===item.key?0:-1" :aria-checked="themeMode===item.key" @click="setThemeMode(item.key)">{{item.label}}<span>{{item.code}}</span></button>
+        </div>
+        <p class="appearance-current" role="status">{{themeDescription}} · {{themeStorageError ? '未保存' : '偏好自动保存'}}</p>
+        <p class="appearance-rule">自动模式使用电脑本地时间：07:00–19:00 浅色，其余时间深色。</p>
+        <p v-if="themeStorageError" class="settings-update-error" role="alert">{{themeStorageError}}</p>
+      </div>
+    </section>
     <div v-if="loading" class="state settings-state">正在读取本地设置…</div>
     <div v-else class="settings-layout">
       <section class="settings-card">
@@ -182,6 +204,6 @@ onUnmounted(()=>unsubscribeUpdates?.())
 .settings-update-preference{display:flex;align-items:center;gap:9px;padding:16px 0 4px;font-size:12px}.settings-update-preference input{accent-color:var(--color-brand)}
 .settings-update-progress{display:block;width:100%;height:8px;accent-color:var(--color-brand);margin:14px 0 7px}.settings-update-error{color:var(--color-danger)!important}
 @media(max-width:800px){.settings-about-layout{grid-template-columns:1fr}}
-.settings-header-actions{margin-left:auto;display:flex;align-items:center;gap:14px}.settings-refresh{padding:6px 10px}.settings-environment-note{padding:12px 0;color:var(--color-warning);font-size:12px;line-height:1.6}.settings-environment-note.ready{color:var(--color-success)}.tool-state{color:var(--color-danger);font-size:11px;flex:none}.tool-state.ready{color:var(--color-success)}.settings-page{padding:42px clamp(24px,6vw,96px) 80px;max-width:1440px;margin:0 auto}.settings-hero{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--color-border);padding-bottom:28px}.settings-hero h1{font:600 clamp(44px,5vw,70px)/.95 'Barlow Condensed';margin:10px 0 8px}.settings-hero p{margin:0;color:var(--color-text-secondary);font-size:13px}.settings-code{color:#6e7268;font-size:10px;letter-spacing:1.7px}.settings-identity{display:flex;align-items:flex-end;gap:16px;flex-direction:column}.settings-identity>b{color:var(--color-brand);font:600 18px 'Barlow Condensed';letter-spacing:1px}.settings-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.8fr);gap:20px;margin-top:28px}.settings-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:2px}.settings-card>header{height:auto;display:flex;padding:20px 22px;border:0;border-bottom:1px solid var(--color-border);background:transparent}.settings-card header small{color:#a5a790;letter-spacing:1.5px}.settings-card h2{font:600 25px 'Barlow Condensed';margin:8px 0 0}.settings-status{color:#8d9188;font-size:10px;letter-spacing:1px}.settings-status.ready{color:var(--color-brand)}.settings-body{padding:8px 22px 22px}.settings-tool-row,.settings-row{display:flex;align-items:center;gap:16px;min-height:62px;border-bottom:1px solid var(--color-border-soft)}.settings-tool-row>div,.settings-row>span{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}.settings-tool-row b,.settings-row b{font-size:13px}.settings-tool-row small,.settings-row small{color:var(--color-text-secondary);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.settings-tool-row .ef-button{flex:none}.settings-divider{height:10px}.settings-row select{min-width:150px;padding:8px 10px;background:#292b25;border:1px solid var(--color-border);border-radius:2px;color:var(--color-text-primary)}.settings-row select:disabled{opacity:.55}.tool-dot{width:8px;height:8px;background:#665d50;border-radius:50%;flex:none}.tool-dot.ready{background:var(--color-brand);box-shadow:0 0 8px #c6ca4c88}.settings-toggle{cursor:pointer}.settings-toggle input{position:absolute;opacity:0}.settings-toggle i{width:34px;height:18px;border:1px solid #66695d;border-radius:10px;position:relative;flex:none;transition:.15s}.settings-toggle i:before{content:"";position:absolute;width:12px;height:12px;left:2px;top:2px;background:#888c80;border-radius:50%;transition:.15s}.settings-toggle input:checked+i{background:#c6ca4c33;border-color:var(--color-brand)}.settings-toggle input:checked+i:before{left:18px;background:var(--color-brand)}.settings-toggle input:focus-visible+i{outline:2px solid var(--color-brand);outline-offset:3px}.settings-danger-card{align-self:start}.settings-danger-card>header>.ef-icon{margin-left:auto;color:#b7675e}.database-summary{display:flex;align-items:baseline;gap:10px;padding:14px 0 10px}.database-summary strong{font:600 46px 'Barlow Condensed';color:var(--color-brand)}.database-summary span{color:var(--color-text-secondary);font-size:12px}.settings-body p{color:var(--color-text-secondary);font-size:12px;line-height:1.7}.settings-clear{margin-top:12px}.settings-notice{margin:18px 0 0;color:var(--color-brand);font-size:12px}.settings-error{margin:18px 0 0;padding:14px}.settings-state{margin:28px 0}.ef-button{flex:none}@media(max-width:800px){.settings-header-actions{margin-left:auto;display:flex;align-items:center;gap:14px}.settings-refresh{padding:6px 10px}.settings-environment-note{padding:12px 0;color:var(--color-warning);font-size:12px;line-height:1.6}.settings-environment-note.ready{color:var(--color-success)}.tool-state{color:var(--color-danger);font-size:11px;flex:none}.tool-state.ready{color:var(--color-success)}.settings-page{padding:28px 4% 60px}.settings-hero{align-items:start;gap:20px}.settings-identity{align-items:flex-end}.settings-code{display:none}.settings-layout{grid-template-columns:1fr}.settings-card>header{padding:18px}.settings-body{padding:6px 18px 18px}.settings-row select{min-width:120px}}
+.settings-header-actions{margin-left:auto;display:flex;align-items:center;gap:14px}.settings-refresh{padding:6px 10px}.settings-environment-note{padding:12px 0;color:var(--color-warning);font-size:12px;line-height:1.6}.settings-environment-note.ready{color:var(--color-success)}.tool-state{color:var(--color-danger);font-size:11px;flex:none}.tool-state.ready{color:var(--color-success)}.settings-page{padding:42px clamp(24px,6vw,96px) 80px;max-width:1440px;margin:0 auto}.settings-hero{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--color-border);padding-bottom:28px}.settings-hero h1{font:600 clamp(44px,5vw,70px)/.95 'Barlow Condensed';margin:10px 0 8px}.settings-hero p{margin:0;color:var(--color-text-secondary);font-size:13px}.settings-code{color:var(--theme-text-6e7268);font-size:10px;letter-spacing:1.7px}.settings-identity{display:flex;align-items:flex-end;gap:16px;flex-direction:column}.settings-identity>b{color:var(--color-brand);font:600 18px 'Barlow Condensed';letter-spacing:1px}.settings-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.8fr);gap:20px;margin-top:28px}.settings-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:2px}.settings-card>header{height:auto;display:flex;padding:20px 22px;border:0;border-bottom:1px solid var(--color-border);background:transparent}.settings-card header small{color:var(--theme-text-a5a790);letter-spacing:1.5px}.settings-card h2{font:600 25px 'Barlow Condensed';margin:8px 0 0}.settings-status{color:var(--theme-text-8d9188);font-size:10px;letter-spacing:1px}.settings-status.ready{color:var(--color-brand)}.settings-body{padding:8px 22px 22px}.settings-tool-row,.settings-row{display:flex;align-items:center;gap:16px;min-height:62px;border-bottom:1px solid var(--color-border-soft)}.settings-tool-row>div,.settings-row>span{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}.settings-tool-row b,.settings-row b{font-size:13px}.settings-tool-row small,.settings-row small{color:var(--color-text-secondary);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.settings-tool-row .ef-button{flex:none}.settings-divider{height:10px}.settings-row select{min-width:150px;padding:8px 10px;background:var(--theme-bg-292b25);border:1px solid var(--color-border);border-radius:2px;color:var(--color-text-primary)}.settings-row select:disabled{opacity:.55}.tool-dot{width:8px;height:8px;background:var(--theme-bg-665d50);border-radius:50%;flex:none}.tool-dot.ready{background:var(--color-brand);box-shadow:0 0 8px var(--theme-shadow-c6ca4c88)}.settings-toggle{cursor:pointer}.settings-toggle input{position:absolute;opacity:0}.settings-toggle i{width:34px;height:18px;border:1px solid var(--theme-border-66695d);border-radius:10px;position:relative;flex:none;transition:.15s}.settings-toggle i:before{content:"";position:absolute;width:12px;height:12px;left:2px;top:2px;background:var(--theme-bg-888c80);border-radius:50%;transition:.15s}.settings-toggle input:checked+i{background:var(--theme-bg-c6ca4c33);border-color:var(--color-brand)}.settings-toggle input:checked+i:before{left:18px;background:var(--color-brand)}.settings-toggle input:focus-visible+i{outline:2px solid var(--color-brand);outline-offset:3px}.settings-danger-card{align-self:start}.settings-danger-card>header>.ef-icon{margin-left:auto;color:var(--theme-text-b7675e)}.database-summary{display:flex;align-items:baseline;gap:10px;padding:14px 0 10px}.database-summary strong{font:600 46px 'Barlow Condensed';color:var(--color-brand)}.database-summary span{color:var(--color-text-secondary);font-size:12px}.settings-body p{color:var(--color-text-secondary);font-size:12px;line-height:1.7}.settings-clear{margin-top:12px}.settings-notice{margin:18px 0 0;color:var(--color-brand);font-size:12px}.settings-error{margin:18px 0 0;padding:14px}.settings-state{margin:28px 0}.ef-button{flex:none}@media(max-width:800px){.settings-header-actions{margin-left:auto;display:flex;align-items:center;gap:14px}.settings-refresh{padding:6px 10px}.settings-environment-note{padding:12px 0;color:var(--color-warning);font-size:12px;line-height:1.6}.settings-environment-note.ready{color:var(--color-success)}.tool-state{color:var(--color-danger);font-size:11px;flex:none}.tool-state.ready{color:var(--color-success)}.settings-page{padding:28px 4% 60px}.settings-hero{align-items:start;gap:20px}.settings-identity{align-items:flex-end}.settings-code{display:none}.settings-layout{grid-template-columns:1fr}.settings-card>header{padding:18px}.settings-body{padding:6px 18px 18px}.settings-row select{min-width:120px}}
 </style>
 

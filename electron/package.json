@@ -1,6 +1,6 @@
 {
   "name": "cs2-cam-desktop",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CS2 Cam 本地比赛分析与 POV 回放",
   "main": "main.cjs",
   "private": true,

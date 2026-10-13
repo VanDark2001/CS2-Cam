@@ -23,6 +23,11 @@ ROOT_SCRIPTS = ['demoparser2_mysql.py', 'flash_blinds.py', 'replay_positions.py'
 POV_FILES = ['export_single_pov.ps1', 'hlae_wrapper.ps1', 'hlae_wrapper.py', 'batch_capture.js', 'recording_profile.py', 'capture_monitor.py']
 
 
+def document_path(name):
+    local = ROOT / 'docs' / name
+    return local if local.is_file() else ROOT / name
+
+
 def copy_file(source, destination):
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
@@ -112,7 +117,7 @@ def main():
     for name in ROOT_SCRIPTS:
         copy_file(ROOT / name, project / name)
     for name in ['GAME_ASSETS.md', 'STATISTICS_RULES.md', 'PORTABLE_THIRD_PARTY.md']:
-        copy_file(ROOT / 'docs' / name, project / 'docs' / name)
+        copy_file(document_path(name), project / 'docs' / name)
     for name in POV_FILES:
         copy_file(ROOT / 'tools/pov' / name, project / 'tools/pov' / name)
     for name in ['record_worker.py', 'portable_database.py']:
@@ -161,8 +166,8 @@ def main():
         if ffprobe_notice.exists():
             copy_file(ffprobe_notice, runtime / 'hlae/ffmpeg/FFPROBE-LICENSE')
     licenses = resources / 'licenses'
-    copy_file(ROOT / 'docs/PORTABLE_THIRD_PARTY.md', licenses / 'THIRD-PARTY.md')
-    copy_file(ROOT / 'docs/CS2_CAM_QUICK_START.md', app_dir / '使用说明.md')
+    copy_file(document_path('PORTABLE_THIRD_PARTY.md'), licenses / 'THIRD-PARTY.md')
+    copy_file(document_path('CS2_CAM_QUICK_START.md'), app_dir / '使用说明.md')
     version = json.loads((ROOT / 'electron/package.json').read_text(encoding='utf-8'))['version']
     info = {'version': version, 'product': 'CS2 Cam', 'platform': 'win32-x64', 'build': build_id,
             'python': '3.12.10', 'database': 'SQLite', 'dataDirectory': 'data',

@@ -1,7 +1,7 @@
 # CS2 Demo Show desktop icon
 
 The geometric mark combines a replay triangle, angular viewfinder and timeline
-blocks. It follows `docs/design/design.md`: carbon `#191a19`, off-white `#e9e7e4`,
+blocks. Palette: carbon `#191a19`, off-white `#e9e7e4`,
 brand yellow-green `#c6ca4c` and border `#474941`. The corners are transparent.
 
 - `app-icon.svg`: editable vector master.

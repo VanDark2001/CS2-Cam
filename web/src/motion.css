@@ -49,7 +49,7 @@
   position: absolute;
   inset: 0 auto 0 -28%;
   width: 28%;
-  background: linear-gradient(90deg, transparent, rgba(219, 225, 109, .22), transparent);
+  background:linear-gradient(90deg, transparent, var(--theme-bg-rgba-219--225--109---22), transparent);
   transform: translateX(0);
   animation: none;
   pointer-events: none;

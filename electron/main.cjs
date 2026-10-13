@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, Menu, shell, session, ipcMain } = require('electron')
+const { app, BrowserWindow, dialog, Menu, shell, session, ipcMain, nativeTheme } = require('electron')
 const { spawn } = require('node:child_process')
 const fs = require('node:fs')
 const http = require('node:http')
@@ -6,6 +6,13 @@ const path = require('node:path')
 const { resolveBackendJar } = require('./backend-build.cjs')
 const { PortableUpdater, githubFetch } = require('./updater.cjs')
 const releaseConfig = require('./release-config.json')
+ipcMain.handle('theme:set', (event, theme) => {
+  if (!['light','dark'].includes(theme)) throw new Error('Invalid theme')
+  const window = BrowserWindow.fromWebContents(event.sender)
+  if (!window) throw new Error('Unknown window')
+  nativeTheme.themeSource = theme
+  window.setBackgroundColor(theme === 'light' ? '#f2f2ec' : '#191a19')
+})
 let updater = null
 let installingUpdate = false
 

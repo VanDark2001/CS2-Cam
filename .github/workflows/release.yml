@@ -37,6 +37,8 @@ jobs:
           Pop-Location
           node --test electron/updater.test.cjs
           python -m unittest discover -s tests -p test_update_installer.py
+          $sourceVersion = (Get-Content electron/package.json -Raw | ConvertFrom-Json).version
+          python tools/export_source.py --output ".cache/CS2-Cam-$sourceVersion-source.zip"
           python tools/build_portable.py --skip-build --java-home "$env:JAVA_HOME" --jar server/target/demo-show-0.0.1-SNAPSHOT.jar --zip
       - name: Publish stable package
         if: startsWith(github.ref, 'refs/tags/v')
@@ -52,4 +54,4 @@ jobs:
             Write-Output "Stable release v$version is already published; preserving its verified assets."
             exit 0
           }
-          gh release create "v$version" $package.FullName "$($package.FullName).sha256" --title "CS2 Cam $version" --generate-notes --latest
+          gh release create "v$version" $package.FullName "$($package.FullName).sha256" ".cache/CS2-Cam-$version-source.zip" ".cache/CS2-Cam-$version-source.zip.sha256" --title "CS2 Cam $version" --generate-notes --latest

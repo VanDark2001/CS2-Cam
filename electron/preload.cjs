@@ -10,6 +10,7 @@ if (Number.isInteger(port) && port > 0 && port <= 65535) {
     installTools: key => ipcRenderer.invoke('settings:install-tools', key),
     openRecordingCfg: () => ipcRenderer.invoke('settings:open-recording-cfg'),
   })
+  if(ipcRenderer)desktop.theme=Object.freeze({set:theme=>ipcRenderer.invoke('theme:set',theme)})
   if(ipcRenderer)desktop.updates=Object.freeze({
     get:()=>ipcRenderer.invoke('updates:state'),
     check:()=>ipcRenderer.invoke('updates:check'),

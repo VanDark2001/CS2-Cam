@@ -7,6 +7,11 @@ import './team.css'
 import './endfield.css'
 import './motion.css'
 import './portfolio.css'
+import './theme-palette.css'
+import './theme.css'
+import { startThemeClock } from './lib/theme'
+const stopThemeClock = startThemeClock()
+if (import.meta.hot) import.meta.hot.dispose(stopThemeClock)
 
 createApp(App).use(router).mount('#app')
 

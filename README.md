@@ -47,7 +47,7 @@
 
 ## 源码开发
 
-正式项目由根目录 Python 解析器、`server/` Spring Boot 后端、`web/` Vue 前端和 `electron/` 桌面壳组成，共享 SQLite 数据库。队伍按 `match_players.team_number` 分组，统计口径见 [统计规则](docs/STATISTICS_RULES.md)。
+正式项目由根目录 Python 解析器、`server/` Spring Boot 后端、`web/` Vue 前端和 `electron/` 桌面壳组成，共享 SQLite 数据库。队伍按 `match_players.team_number` 分组，统计口径见 [统计规则](STATISTICS_RULES.md)。
 
 需要 Node.js 24、JDK 17、Maven、Python 3.12、Go 1.24+。在仓库根目录执行：
 
@@ -79,12 +79,16 @@ python -m unittest discover -s tests -p test_update_installer.py
 
 不要提交 `.env`、Demo、数据库、日志、个人头像缓存、虚拟环境、`node_modules`、`target` 或 `dist`。
 
+## 外观模式（0.1.2 开发版）
+
+设置页提供浅色、深色与自动三种模式。浅色使用终末地风格的暖白、浅灰、深色文字与黄绿强调。自动模式按电脑本地时间 07:00–19:00 使用浅色，其余时段深色；偏好本地保存，手动模式不受时间覆盖。
+
 ## 源码结构
 
 - 根目录：正式 Demo 解析、SQLite schema、统计评分、致盲/回放处理与 Steam 头像获取。`demoparser2_mysql.py` 保留兼容文件名，实际使用 SQLite。
 - `server/`、`web/`、`electron/`：后端、前端与桌面端。
 - `tools/build_portable.py`：正式打包入口；`tools/record_worker.py`、`tools/pov/` 与 `tools/replay_positions/`：正式回放/录制链路。
-- `tests/` 与相邻测试文件：持续回归测试；`docs/`：使用、构建、统计与设计规则。
+- `tests/` 与相邻测试文件：持续回归测试；`文档：使用、构建与统计说明。
 
 已移除旧 MySQL 迁移、一次性数据库压缩/校验、手工清空、成品刷新、临时发行组装和早期 POV 替代脚本。
 
@@ -96,4 +100,8 @@ python -m unittest discover -s tests -p test_update_installer.py
 
 ## 第三方资源与声明
 
-游戏地图、武器与 HUD 资源权利属于其权利方，见 [资源来源](docs/GAME_ASSETS.md)。运行环境保留各组件许可证，见 [第三方声明](docs/PORTABLE_THIRD_PARTY.md)。项目目前未指定额外的源码授权许可证。
+游戏地图、武器与 HUD 资源权利属于其权利方，见 [资源来源](GAME_ASSETS.md)。运行环境保留各组件许可证，见 [第三方声明](PORTABLE_THIRD_PARTY.md)。项目目前未指定额外的源码授权许可证。
+
+## 源码发布过滤
+
+在 Git 检出目录运行 `python tools/export_source.py --output .cache/CS2-Cam-source.zip`。导出自动排除 `AGENTS.md`、本地 `docs` 交接/设计/模板资料、个人数据、环境配置与构建产物；仅提取使用指南、统计口径、游戏资源来源及第三方声明。发布源码使用该导出入口，不直接压缩开发目录。

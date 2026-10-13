@@ -1,0 +1,79 @@
+/* Endfield light: warm paper panels, precise charcoal type and acid accents. */
+:root[data-theme="light"] {
+ --color-page-bg:#f2f2ec; --color-surface:#fafaf5; --color-surface-raised:#e9ece2;
+ --color-border:#c7cbc0; --color-border-soft:#dde0d5; --color-text-primary:#20231e;
+ --color-text-secondary:#62695c; --color-brand:#6e7800; --color-success:#477330;
+ --color-danger:#bd302e; --color-warning:#8c6000; --color-control-hover:#e5e9dd; --color-win:#376849;
+ color-scheme:light;
+}
+:root[data-theme="dark"] {color-scheme:dark}
+:root[data-theme="light"] body{background-image:linear-gradient(#303c1908 1px,transparent 1px),linear-gradient(90deg,#303c1908 1px,transparent 1px);background-size:48px 48px}
+:root[data-theme="light"] .app-header{background:#f8f9f2f5;border-bottom-color:#bfc4b5}
+:root[data-theme="light"] .ef-button--primary,:root[data-theme="light"] .upload,:root[data-theme="light"] .timeline-play{background:#dce638!important;color:#20251a!important;border-color:#a6b123!important}
+:root[data-theme="light"] .ef-button--primary:hover,:root[data-theme="light"] .upload:hover{background:#e5ed63!important}
+:root[data-theme="light"] .player-weapon img,:root[data-theme="light"] .player-equipment img,:root[data-theme="light"] .player-kd img,:root[data-theme="light"] .player-armor img{filter:brightness(0);opacity:.8}
+:root[data-theme="light"] .player-id-number{color:color-mix(in srgb,var(--player-color) 65%,#183020)}
+:root[data-theme="light"] .round-track button.winner-ct{color:#f9fcff!important}
+:root[data-theme="light"] .round-track button.winner-t{color:#fff8e5!important}
+:root[data-theme="light"] .round-track button.active{color:#17220f!important}
+:root[data-theme="light"] .pov-overlay,:root[data-theme="light"] .pov-video-shell{background:#111612}
+:root[data-theme="light"] ::selection{background:#dce638;color:#20231e}
+.settings-appearance{margin-top:28px;margin-bottom:24px}
+.settings-appearance .settings-body{padding-top:20px}
+.appearance-options{display:flex;gap:10px;flex-wrap:wrap}
+.appearance-options button{min-width:120px;min-height:42px;justify-content:space-between}
+.appearance-options button[aria-checked="true"]{border-color:var(--color-brand);background:color-mix(in srgb,var(--color-brand) 12%,var(--color-surface));box-shadow:inset 3px 0 var(--color-brand)}
+.appearance-options button span{font-size:10px;opacity:.7}
+.appearance-current{font-size:12px!important;color:var(--color-text-primary)!important}
+.appearance-rule{margin-bottom:0}
+@media(max-width:600px){.appearance-options button{flex:1;min-width:90px}}
+
+:root[data-theme="light"] .pov-overlay-close.ef-button{background:#fafaf5e8;color:#20231e}
+
+:root[data-theme="light"] .round-track button.winner-ct{background:#2b78b6!important}
+:root[data-theme="light"] .round-track button.winner-t{background:#a57b00!important}
+:root[data-theme="light"] .round-track button.winner-ct.active{background:#79b9ed!important}
+:root[data-theme="light"] .round-track button.winner-t.active{background:#efc852!important}
+
+:root[data-theme="light"] .replay-stage,:root[data-theme="light"] .team-overlay,:root[data-theme="light"] .timeline,:root[data-theme="light"] .pov-panel{box-shadow:none!important}
+:root[data-theme="light"] .replay-stage .radar-panel{filter:none}
+:root[data-theme="light"]{
+--theme-shadow-000:rgba(29,40,20,.08);
+--theme-shadow-0002:rgba(29,40,20,.08);
+--theme-shadow-0004:rgba(29,40,20,.08);
+--theme-shadow-0005:rgba(29,40,20,.08);
+--theme-shadow-0006:rgba(29,40,20,.08);
+--theme-shadow-0007:rgba(29,40,20,.08);
+--theme-shadow-0008:rgba(29,40,20,.08);
+--theme-shadow-000b:rgba(29,40,20,.08);
+}
+
+:root[data-theme="light"] *{scrollbar-color:#a5ae92 #e9ece2}
+
+/* Critical bomb states need a solid plate behind their white game artwork. */
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) {
+  filter:drop-shadow(0 3px 7px #17201726);
+}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-pill {
+  background:#1e2824;
+  border:1px solid #bf6470;
+  box-shadow:inset 3px 0 #ff8490;
+}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-pill {
+  border-color:#9ca847;
+  box-shadow:inset 3px 0 #dbe65a;
+}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-icon {
+  background:#101916!important;
+  border-color:#bf6470!important;
+  color:#fff!important;
+}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-icon {border-color:#9ca847!important}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-game-icon {filter:brightness(0) invert(1);opacity:1}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-phase {color:#d9e1d5}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-primary {color:#ff8490}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-primary {color:#dbe65a}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-badge {background:#101916;color:#ff9ba5;border-color:#bf6470}
+:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-badge {color:#dbe65a;border-color:#9ca847}
+:root[data-theme="light"] .grenade-marker[data-event-kind="bomb"] {background:#1e2824;box-shadow:none;color:#ff8490;border-color:#bf6470}
+:root[data-theme="light"] .grenade-marker[data-event-kind="bomb"].team-ct {color:#dbe65a;border-color:#9ca847}
