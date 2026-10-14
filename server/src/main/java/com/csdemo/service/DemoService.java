@@ -657,12 +657,29 @@ public class DemoService {
     CompletableFuture.runAsync(()->{
       job.put("status","recording");
       try{
-        ProcessBuilder pb=new ProcessBuilder(System.getenv().getOrDefault("CS2_POWERSHELL","powershell.exe"),"-ExecutionPolicy","Bypass","-File",script.toString(),"-Task",taskFile.toString(),"-Output",out.toString()); applyRecordingSettings(pb); pb.environment().put("CS2_DEMO",demoPath); pb.environment().put("POV_JOB_ID",jobId); pb.redirectErrorStream(true); pb.redirectOutput(out.resolve("render.log").toFile()); Process process=pb.start(); job.put("pid",process.pid()); int code=process.waitFor(); if(code!=0) throw new IllegalStateException("POV worker exited with code "+code); job.put("status","completed"); job.put("file",out.resolve("final.mp4").toString());
+        ProcessBuilder pb=new ProcessBuilder(System.getenv().getOrDefault("CS2_POWERSHELL","powershell.exe"),"-ExecutionPolicy","Bypass","-File",script.toString(),"-Task",taskFile.toString(),"-Output",out.toString()); applyRecordingSettings(pb); pb.environment().put("CS2_DEMO",demoPath); pb.environment().put("POV_JOB_ID",jobId); pb.redirectErrorStream(true); pb.redirectOutput(out.resolve("render.log").toFile()); Process process=pb.start(); job.put("pid",process.pid()); int code=process.waitFor(); if(code!=0) throw new IllegalStateException(povFailure(out,code)); job.put("status","completed"); job.put("file",out.resolve("final.mp4").toString());
         job.put("fileUrl","/api/pov/export/"+jobId+"/file");
       }catch(Exception e){job.put("status","failed");job.put("message",Optional.ofNullable(e.getMessage()).orElse(e.toString()));}
       finally{try{Files.deleteIfExists(taskFile);}catch(IOException ignored){}}
     });
     return Map.of("status","queued","jobId",jobId,"output",out.toString());
+  }
+
+  String povFailure(Path out,int code) {
+    try {
+      Path report=out.resolve("worker-error.json");
+      if(Files.isRegularFile(report)) {
+        Map<?,?> error=objectMapper.readValue(report.toFile(),Map.class);
+        if(error.get("message") instanceof String message&&!message.isBlank())return message;
+      }
+      Path log=out.resolve("render.log");
+      if(Files.isRegularFile(log))try(RandomAccessFile file=new RandomAccessFile(log.toFile(),"r")) {
+        int size=(int)Math.min(4096,file.length());byte[] tail=new byte[size];file.seek(file.length()-size);file.readFully(tail);
+        String detail=new String(tail,StandardCharsets.UTF_8).trim();
+        if(!detail.isBlank())return "POV 录制失败（退出码 "+code+"）："+detail+"。详细记录："+log;
+      }
+    }catch(IOException ignored){}
+    return "POV 录制失败（退出码 "+code+"），未收到具体诊断；请检查设置页录制组件与任务 render.log。";
   }
 
   public Map<String,Object> povJob(String id){ Map<String,Object> job=povJobs.get(id); if(job==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"POV 任务不存在"); return Map.copyOf(job); }

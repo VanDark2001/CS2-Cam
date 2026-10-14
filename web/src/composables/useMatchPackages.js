@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import { API, mapName } from '../lib/presentation'
 import { readPovFavorites, samePovFavorite } from '../lib/povFavorites'
 
-const state = reactive({ working: false, operation: '', message: '', status: '', progress: null, downloadUrl: '', fileName: '', matchId: null, pendingFavorites: [] })
+const state = reactive({ working: false, operation: '', exportMatchId: null, exportScope: '', message: '', status: '', progress: null, downloadUrl: '', fileName: '', matchId: null, pendingFavorites: [] })
 let lastExport = null
 async function responseData(response) {
   const data = await response.json()
@@ -19,8 +19,8 @@ async function waitJob(id) {
   }
   throw new Error('处理仍在后台进行，请稍后检查比赛列表')
 }
-function reset(operation) {
-  Object.assign(state, { working: true, operation, message: '', status: 'working', progress: null, downloadUrl: '', fileName: '', matchId: null, pendingFavorites: [] })
+function reset(operation, exportMatchId = null, exportScope = '') {
+  Object.assign(state, { working: true, operation, exportMatchId, exportScope, message: '', status: 'working', progress: null, downloadUrl: '', fileName: '', matchId: null, pendingFavorites: [] })
 }
 function mergeFavorites() {
   const current = readPovFavorites(localStorage.getItem('cs2-pov-favorites'))
@@ -34,7 +34,7 @@ function mergeFavorites() {
 }
 async function exportMatch(id, scope = 'match') {
   if (state.working || !id) return
-  state.working = true
+  reset('export', Number(id), scope)
   try {
     const favorites = readPovFavorites(localStorage.getItem('cs2-pov-favorites')).filter(item => Number(item?.matchId) === Number(id)).map(item => ({ ...item, title: item.title || `${mapName(item.map)} · 第 ${item.round} 回合` }))
     const recordings = await responseData(await fetch(`${API}/pov/exports?matchId=${id}`))
@@ -43,7 +43,7 @@ async function exportMatch(id, scope = 'match') {
       Object.assign(state, lastExport.result)
       return
     }
-    reset('export')
+    reset('export', Number(id), scope)
     state.message = '正在准备比赛包'
     const started = await responseData(await fetch(`${API}/matches/${id}/package`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ favorites, scope }) }))
     const job = await waitJob(started.jobId)
@@ -52,7 +52,7 @@ async function exportMatch(id, scope = 'match') {
     state.fileName = job.fileName
     state.message = `${scope === 'favorites' ? '收藏包' : '整场比赛包'}已就绪 · ${job.viewCount ?? job.povCount} 个视角 · ${(job.bytes / 1024 / 1024).toFixed(1)} MB${job.missingViews ? ` · ${job.missingViews} 个收藏视角尚未生成` : ''}`
     state.status = 'completed'
-    lastExport = { key, result: { operation: 'export', downloadUrl: state.downloadUrl, fileName: state.fileName, message: state.message, status: 'completed', matchId: null, pendingFavorites: [] } }
+    lastExport = { key, result: { operation: 'export', exportMatchId: Number(id), exportScope: scope, downloadUrl: state.downloadUrl, fileName: state.fileName, message: state.message, status: 'completed', matchId: null, pendingFavorites: [] } }
   } catch (error) { state.status = 'failed'; state.message = error.message }
   finally { state.working = false }
 }

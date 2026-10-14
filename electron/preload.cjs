@@ -9,6 +9,7 @@ if (Number.isInteger(port) && port > 0 && port <= 65535) {
     choosePath: key => ipcRenderer.invoke('settings:choose-path', key),
     installTools: key => ipcRenderer.invoke('settings:install-tools', key),
     openRecordingCfg: () => ipcRenderer.invoke('settings:open-recording-cfg'),
+    openDemoFolder: () => ipcRenderer.invoke('settings:open-demo-folder'),
   })
   if(ipcRenderer)desktop.theme=Object.freeze({set:theme=>ipcRenderer.invoke('theme:set',theme)})
   if(ipcRenderer)desktop.updates=Object.freeze({
@@ -21,3 +22,8 @@ if (Number.isInteger(port) && port > 0 && port <= 65535) {
   })
   contextBridge.exposeInMainWorld('csdemoDesktop', Object.freeze(desktop))
 }
+
+// Ctrl-wheel is browser zoom; desktop scaling belongs to the window adapter.
+window.addEventListener('wheel', event => {
+  if (event.ctrlKey || event.metaKey) event.preventDefault()
+}, { passive: false, capture: true })

@@ -12,6 +12,7 @@ defineProps({
     <path v-if="name==='crosshair'" d="M12 2v5m0 10v5M2 12h5m10 0h5M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0ZM12 11v2" />
     <path v-else-if="name==='skull'" d="M8 20h8v-4l3-2V9a7 7 0 0 0-14 0v5l3 2v4ZM8 9h2v2H8Zm6 0h2v2h-2Zm-3 5 1-2 1 2m-3 3v3m4-3v3" />
     <path v-else-if="name==='grid'" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
+    <path v-else-if="name==='folder'" d="M3 7V5h7l2 2h9v13H3V7Zm0 3h18" />
     <path v-else-if="name==='matches'" d="M4 7h16M4 12h11M4 17h16M18 10l2 2-2 2" />
     <path v-else-if="name==='replay'" d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm5 4v8l6-4-6-4Z" />
     <path v-else-if="name==='players'" d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8-1a2.5 2.5 0 1 0 0-5M3 20a5 5 0 0 1 10 0M15 14a4 4 0 0 1 6 3" />

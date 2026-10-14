@@ -109,6 +109,14 @@ async function openRecordingCfg() {
   finally { saving.value = '' }
 }
 
+const openingDemoFolder = ref(false)
+async function openDemoFolder() {
+  if (!desktop?.openDemoFolder || openingDemoFolder.value) return
+  openingDemoFolder.value = true; error.value = ''; notice.value = ''
+  try { await desktop.openDemoFolder(); notice.value = '已打开 Demo 文件夹。' }
+  catch (exception) { error.value = exception.message || '无法打开 Demo 文件夹，请重试。' }
+  finally { openingDemoFolder.value = false }
+}
 async function clearDatabase() {
   if (clearing.value || !window.confirm(`确定清空数据库中的 ${matchCount.value} 场比赛吗？此操作会删除统计记录，且无法撤销。`)) return
   clearing.value = true; error.value = ''; notice.value = ''
@@ -162,7 +170,7 @@ onUnmounted(()=>unsubscribeUpdates?.())
       </section>
       <section class="settings-card settings-danger-card">
         <header><div><small>DATA / MAINTENANCE</small><h2>本地数据</h2></div><EndfieldIcon name="remove" :size="18" /></header>
-        <div class="settings-body"><div class="database-summary"><strong>{{ matchCount }}</strong><span>场比赛已记录</span></div><p>清空会删除比赛、回合、击杀和位置统计记录，保留应用设置与表结构。上传的 Demo 文件不会被删除。</p><button class="ef-button ef-button--danger settings-clear" :disabled="clearing" @click="clearDatabase"><EndfieldIcon name="remove" :size="14" />{{ clearing ? '清空中…' : '清空数据库' }}</button></div>
+        <div class="settings-body"><div class="database-summary"><strong>{{ matchCount }}</strong><span>场比赛已记录</span></div><p>清空会删除比赛、回合、击杀和位置统计记录，保留应用设置与表结构。上传的 Demo 文件不会被删除。</p><div class="settings-data-actions"><button class="ef-button" :disabled="!state.available || !desktop?.openDemoFolder || openingDemoFolder" @click="openDemoFolder"><EndfieldIcon name="folder" :size="14" />{{openingDemoFolder ? '打开中…' : '打开 Demo 文件夹'}}</button><button class="ef-button ef-button--danger settings-clear" :disabled="clearing" @click="clearDatabase"><EndfieldIcon name="remove" :size="14" />{{ clearing ? '清空中…' : '清空数据库' }}</button></div></div>
       </section>
     </div>
     <div class="settings-about-layout">
@@ -194,6 +202,9 @@ onUnmounted(()=>unsubscribeUpdates?.())
 </template>
 
 <style scoped>
+.settings-data-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.settings-data-actions .settings-clear{margin-top:0}
+
 .settings-about-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
 .settings-author{display:flex;align-items:center;gap:16px;padding:18px 0 8px}
 .settings-author>img,.settings-author-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--color-border);flex:none}

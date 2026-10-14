@@ -12,7 +12,7 @@ PRIVATE_SUFFIXES = {'.dem','.sqlite3','.sqlite','.db','.log','.mp4','.webm','.py
 def public_path(relative):
     path = PurePosixPath(relative)
     if path.is_absolute() or '..' in path.parts: raise ValueError('Invalid source path')
-    if path.name in {'AGENTS.md','.env'} or any(part.lower() in PRIVATE_PARTS or part.startswith('.venv') for part in path.parts): return None
+    if path.name in {'AGENTS.md','HANDOFF.md','.env'} or any(part.lower() in PRIVATE_PARTS or part.startswith('.venv') for part in path.parts): return None
     if path.suffix.lower() in PRIVATE_SUFFIXES or path.name.endswith(('-wal','-shm')): return None
     if path.parts[0] == 'docs':
         return path.name if len(path.parts)==2 and path.name in PUBLIC_DOCUMENTS else None

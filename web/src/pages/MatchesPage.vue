@@ -111,7 +111,7 @@ function expandedMetrics(player) {
 
 <template>
   <div class="workspace">
-    <aside class="match-sidebar paginated-sidebar"><div class="sidebar-head"><div><small>MATCH HISTORY</small><h3>比赛记录</h3></div><span>{{ filteredMatches.length }}</span></div><label class="map-filter"><span>地图筛选</span><select v-model="selectedMap" @change="filterMatches"><option value="all">全部地图</option><option v-for="map in mapOptions" :key="map" :value="map">{{ mapName(map) }}</option></select></label><div v-if="!filteredMatches.length&&!loading" class="empty-list">没有符合条件的比赛</div><Transition name="sidebar-slide" mode="out-in"><div :key="page" class="sidebar-matches"><button v-for="match in pagedMatches" :key="match.id" class="match-item" :class="{selected:active?.id===match.id}" @click="chooseMatch(match)"><MapIcon :map="match.map" :label="mapName(match.map)"/><span class="match-copy"><b>{{ mapName(match.map) }}</b><time :title="matchTime(match.date,match.dateSource)">{{ matchTime(match.date,match.dateSource) }}</time><em>{{ match.server||'未知服务器' }}</em></span><strong v-if="scoreValues(match.score).length===2" class="match-score"><span :class="scoreTone(match.score,0)">{{ scoreValues(match.score)[0] }}</span><i>:</i><span :class="scoreTone(match.score,1)">{{ scoreValues(match.score)[1] }}</span></strong><strong v-else>{{ match.score }}</strong></button></div></Transition><div class="sidebar-pagination" aria-label="比赛列表分页"><button :disabled="page===1" aria-label="上一页" @click="page--">‹</button><label>第 <select v-model.number="page" aria-label="选择页码"><option v-for="number in pageCount" :key="number" :value="number">{{ number }}</option></select> / {{ pageCount }} 页</label><button :disabled="page===pageCount" aria-label="下一页" @click="page++">›</button><small>每页 {{ pageSize }} 场 · 共 {{ filteredMatches.length }} 场</small></div></aside>
+    <aside class="match-sidebar paginated-sidebar"><div class="sidebar-head"><div><small>MATCH HISTORY</small><h3>比赛记录</h3></div><span>{{ filteredMatches.length }}</span></div><label class="map-filter"><span>地图筛选</span><select v-model="selectedMap" @change="filterMatches"><option value="all">全部地图</option><option v-for="map in mapOptions" :key="map" :value="map">{{ mapName(map) }}</option></select></label><div v-if="!filteredMatches.length&&!loading" class="empty-list">没有符合条件的比赛</div><Transition name="sidebar-slide" mode="out-in"><div :key="page" class="sidebar-matches"><button v-for="match in pagedMatches" :key="match.id" class="match-item" :class="{selected:active?.id===match.id}" @click="chooseMatch(match)"><MapIcon :map="match.map" :label="mapName(match.map)"/><span class="match-copy"><b :title="displayTitle(match)">{{ displayTitle(match) }}</b><time :title="matchTime(match.date,match.dateSource)">{{ matchTime(match.date,match.dateSource) }}</time><em>{{ match.server||'未知服务器' }}</em></span><strong v-if="scoreValues(match.score).length===2" class="match-score"><span :class="scoreTone(match.score,0)">{{ scoreValues(match.score)[0] }}</span><i>:</i><span :class="scoreTone(match.score,1)">{{ scoreValues(match.score)[1] }}</span></strong><strong v-else>{{ match.score }}</strong></button></div></Transition><div class="sidebar-pagination" aria-label="比赛列表分页"><button :disabled="page===1" aria-label="上一页" @click="page--">‹</button><label>第 <select v-model.number="page" aria-label="选择页码"><option v-for="number in pageCount" :key="number" :value="number">{{ number }}</option></select> / {{ pageCount }} 页</label><button :disabled="page===pageCount" aria-label="下一页" @click="page++">›</button><small>每页 {{ pageSize }} 场 · 共 {{ filteredMatches.length }} 场</small></div></aside>
     <main>
       <Transition name="detail-slide" mode="out-in">
       <div :key="`${active?.id || 'empty'}`" class="match-detail-pane">
@@ -175,18 +175,18 @@ function expandedMetrics(player) {
 .editable-match-title{height:100%;min-height:0;box-sizing:border-box;display:flex;align-items:center;margin:0}
 .edit-match-title{padding:3px 7px;font-size:10px}
 .match-stream-label { flex: none; align-self: flex-start; color:var(--theme-text-77796f); font-size: 9px; letter-spacing: 1.6px; padding-top: 3px; }
-.match-action-area { display: flex; align-items: flex-start; gap: 8px; margin: 22px 5% 0; min-width: 0; }
-.match-action-area .package-controls { flex: 1; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.match-action-area { display: grid; grid-template-columns:132px 132px minmax(0,1fr); align-items: start; gap: 8px; margin: 22px 5% 0; min-width: 0; }
+.match-action-area .package-controls { display: contents; }
 .match-action-area :deep(.package-buttons), .match-action-area :deep(.package-status) { justify-content: flex-start; }
-.match-action-area :deep(.package-buttons) { flex: none; }
-.match-action-area :deep(.package-status) { flex: 1; min-width: 260px; max-width: none; margin: 0; padding: 8px 10px; justify-content: flex-start; background:var(--theme-bg-20251f); border:1px solid var(--color-border); border-left:2px solid var(--color-brand); color:var(--color-text-primary); }
+.match-action-area :deep(.package-buttons) { grid-column:2; grid-row:1; }
+.match-action-area :deep(.package-status) { grid-column:1 / -1; grid-row:2; min-width: 0; max-width: none; margin: 0; padding: 8px 10px; justify-content: flex-start; background:var(--theme-bg-20251f); border:1px solid var(--color-border); border-left:2px solid var(--color-brand); color:var(--color-text-primary); }
 .match-action-area :deep(.package-status .ef-button) { margin-left: auto; white-space: nowrap; }
-.match-action-area .delete-match { margin-left: auto; }
+.match-action-area .delete-match { grid-column:3; grid-row:1; justify-self:end; }
 .empty-match-import { margin: 26px 5%; }
 @media (max-width: 1000px) { .match-stream-label { display: none; } }
 @media (max-width: 700px) {
-  .match-action-area { flex-wrap: wrap; margin: 20px 3% 0; }
-  .match-action-area .package-controls { flex: 1 1 100%; order: 3; }
-  .match-action-area .delete-match { order: 2; }
+  .match-action-area { grid-template-columns:repeat(2,minmax(0,1fr)); margin: 20px 3% 0; }
+  .match-action-area :deep(.package-status) { grid-row:3; }
+  .match-action-area .delete-match { grid-column:2; grid-row:2; }
 }
 </style>

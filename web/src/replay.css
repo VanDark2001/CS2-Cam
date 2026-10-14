@@ -1129,3 +1129,6 @@ html,body,#app{overflow-anchor:none}.replay-page{overflow-anchor:none}.replay-st
   .replay-page > .timeline .round-counter{left:calc(50% - 150px)}
   .replay-page > .timeline .timeline-clock{right:calc(50% - 150px)}
 }
+
+/* Seeking is owned by the shared round timeline below the video. */
+.pov-overlay video::-webkit-media-controls-timeline {display:none!important}

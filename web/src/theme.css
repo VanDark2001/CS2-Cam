@@ -1,14 +1,14 @@
 /* Endfield light: warm paper panels, precise charcoal type and acid accents. */
 :root[data-theme="light"] {
- --color-page-bg:#f2f2ec; --color-surface:#fafaf5; --color-surface-raised:#e9ece2;
- --color-border:#c7cbc0; --color-border-soft:#dde0d5; --color-text-primary:#20231e;
+ --color-page-bg:#d8dbd3; --color-surface:#e2e5dd; --color-surface-raised:#d1d6cb;
+ --color-border:#aeb6a7; --color-border-soft:#c2c9ba; --color-text-primary:#20231e;
  --color-text-secondary:#62695c; --color-brand:#6e7800; --color-success:#477330;
- --color-danger:#bd302e; --color-warning:#8c6000; --color-control-hover:#e5e9dd; --color-win:#376849;
+ --color-danger:#bd302e; --color-warning:#8c6000; --color-control-hover:#ccd3c3; --color-win:#376849;
  color-scheme:light;
 }
 :root[data-theme="dark"] {color-scheme:dark}
 :root[data-theme="light"] body{background-image:linear-gradient(#303c1908 1px,transparent 1px),linear-gradient(90deg,#303c1908 1px,transparent 1px);background-size:48px 48px}
-:root[data-theme="light"] .app-header{background:#f8f9f2f5;border-bottom-color:#bfc4b5}
+:root[data-theme="light"] .app-header{background:#e2e5dcf5;border-bottom-color:#aeb6a7}
 :root[data-theme="light"] .ef-button--primary,:root[data-theme="light"] .upload,:root[data-theme="light"] .timeline-play{background:#dce638!important;color:#20251a!important;border-color:#a6b123!important}
 :root[data-theme="light"] .ef-button--primary:hover,:root[data-theme="light"] .upload:hover{background:#e5ed63!important}
 :root[data-theme="light"] .player-weapon img,:root[data-theme="light"] .player-equipment img,:root[data-theme="light"] .player-kd img,:root[data-theme="light"] .player-armor img{filter:brightness(0);opacity:.8}
@@ -28,7 +28,7 @@
 .appearance-rule{margin-bottom:0}
 @media(max-width:600px){.appearance-options button{flex:1;min-width:90px}}
 
-:root[data-theme="light"] .pov-overlay-close.ef-button{background:#fafaf5e8;color:#20231e}
+:root[data-theme="light"] .pov-overlay-close.ef-button{background:#e2e5dde8;color:#20231e}
 
 :root[data-theme="light"] .round-track button.winner-ct{background:#2b78b6!important}
 :root[data-theme="light"] .round-track button.winner-t{background:#a57b00!important}
@@ -50,30 +50,53 @@
 
 :root[data-theme="light"] *{scrollbar-color:#a5ae92 #e9ece2}
 
-/* Critical bomb states need a solid plate behind their white game artwork. */
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) {
-  filter:drop-shadow(0 3px 7px #17201726);
+
+/* One dark HUD across themes and phases; only semantic text changes color. */
+:root {
+ --replay-hud-bg:#1e2824; --replay-hud-tile:#101916; --replay-hud-text:#edf2e9;
+ --replay-hud-muted:#c6d0c1; --replay-hud-border:#67736b;
+ --replay-hud-danger:#ff8490; --replay-hud-accent:#dbe65a;
 }
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-pill {
-  background:#1e2824;
-  border:1px solid #bf6470;
-  box-shadow:inset 3px 0 #ff8490;
+:root[data-theme] .replay-stage .radar-panel > .replay-hud {filter:drop-shadow(0 3px 7px #17201726)}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-pill {
+ background:var(--replay-hud-bg); border:1px solid var(--replay-hud-border); box-shadow:none;
 }
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-pill {
-  border-color:#9ca847;
-  box-shadow:inset 3px 0 #dbe65a;
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .ripples {display:none}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-icon {
+ background:var(--replay-hud-tile)!important; border:1px solid var(--replay-hud-border)!important; color:var(--replay-hud-text)!important;
 }
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-icon {
-  background:#101916!important;
-  border-color:#bf6470!important;
-  color:#fff!important;
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-game-icon {filter:brightness(0) invert(1);opacity:1}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-phase {color:var(--replay-hud-muted)}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-primary {color:var(--replay-hud-text)}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-badge {
+ background:var(--replay-hud-tile);color:var(--replay-hud-accent);border:1px solid var(--replay-hud-border);
 }
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-icon {border-color:#9ca847!important}
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-game-icon {filter:brightness(0) invert(1);opacity:1}
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-phase {color:#d9e1d5}
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-primary {color:#ff8490}
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-primary {color:#dbe65a}
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud:is(.status-bomb,.status-defused) .hud-badge {background:#101916;color:#ff9ba5;border-color:#bf6470}
-:root[data-theme="light"] .replay-stage .radar-panel > .replay-hud.status-defused .hud-badge {color:#dbe65a;border-color:#9ca847}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-pill,
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-badge {border-color:#bf6470}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-icon {border-color:#bf6470!important}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-primary,
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-bomb .hud-badge {color:var(--replay-hud-danger)}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-defused .hud-pill,
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-defused .hud-badge {border-color:#9ca847}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-defused .hud-icon {border-color:#9ca847!important}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud:is(.status-defused,.status-buy) .hud-primary {color:var(--replay-hud-accent)}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud.status-buy .hud-icon {color:var(--replay-hud-accent)!important}
+:root[data-theme="light"] .killfeed :is(.kill-icon,.headshot-icon) {filter:brightness(0);opacity:.9}
 :root[data-theme="light"] .grenade-marker[data-event-kind="bomb"] {background:#1e2824;box-shadow:none;color:#ff8490;border-color:#bf6470}
 :root[data-theme="light"] .grenade-marker[data-event-kind="bomb"].team-ct {color:#dbe65a;border-color:#9ca847}
+
+/* A round boundary changes only the caption inside the original capsule. */
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-pill {left:0!important;top:0!important;width:100%!important;height:100%!important;transform:none!important;transition:border-radius .26s}
+@media(prefers-reduced-motion:reduce){:root[data-theme] .replay-stage .radar-panel > .replay-hud,:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-pill {transition:none}}
+
+/* One persistent round label, including its enlarged entrance state. */
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-phase {font-family:Inter,"Microsoft YaHei",sans-serif;transform-origin:center center;position:relative;z-index:2}
+
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-primary {transform-origin:center center;position:relative;z-index:2;overflow:visible}
+
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-primary {flex:0 1 auto}
+:root[data-theme] .replay-stage .radar-panel > .replay-hud .hud-badge {margin-left:auto}
+
+/* Neutral gray backing improves radar outline contrast in the light theme. */
+:root[data-theme="light"] .replay-stage,
+:root[data-theme="light"] .replay-stage .radar-panel {background:#cfd2d4}

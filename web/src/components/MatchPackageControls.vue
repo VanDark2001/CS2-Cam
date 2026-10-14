@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import EndfieldIcon from './EndfieldIcon.vue'
 import { useMatchPackages } from '../composables/useMatchPackages'
-defineProps({ matchId: { type: [Number, String], default: null }, scope: { type: String, default: 'match' }, allowImport: { type: Boolean, default: true } })
+const props = defineProps({ matchId: { type: [Number, String], default: null }, scope: { type: String, default: 'match' }, allowImport: { type: Boolean, default: true } })
 const { state, exportMatch, importMatch, mergeFavorites } = useMatchPackages()
+const showStatus = computed(() => state.operation === 'export' ? Number(state.exportMatchId) === Number(props.matchId) && state.exportScope === props.scope : props.allowImport)
 const input = ref(null), router = useRouter()
 function choose(event) { const file = event.target.files?.[0]; event.target.value = ''; importMatch(file) }
 function retryFavorites() { try { mergeFavorites(); state.message = '收藏已合并' } catch { state.message = '收藏保存失败，请检查本地存储空间' } }
@@ -16,7 +17,7 @@ function retryFavorites() { try { mergeFavorites(); state.message = '收藏已�
       <button class="ef-button ef-button--toolbar" v-if="matchId" :disabled="state.working" @click="exportMatch(matchId,scope)"><EndfieldIcon name="download" :size="14" />{{scope==='favorites' ? '导出本场收藏' : '导出整场比赛'}}</button>
       <input v-if="allowImport" ref="input" type="file" accept=".csdemo" aria-label="选择比赛包" @change="choose" hidden>
     </div>
-    <div v-if="state.message && (allowImport || state.operation === 'import' || state.operation === 'export')" class="package-status" :class="{error:state.status==='failed'}" role="status">
+    <div v-if="state.message && showStatus" class="package-status" :class="{error:state.status==='failed'}" role="status">
       <span>{{state.message}}</span>
       <progress v-if="state.progress!=null" max="100" :value="state.progress" aria-label="比赛包上传进度"></progress>
       <a class="ef-button ef-button--accent" v-if="state.downloadUrl" :href="state.downloadUrl" :download="state.fileName"><EndfieldIcon name="download" :size="14" />下载比赛包</a>

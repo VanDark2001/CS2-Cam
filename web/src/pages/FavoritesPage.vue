@@ -16,7 +16,7 @@ function focusTitleEditor(element) { const input = element.querySelector('input'
 const router = useRouter(), { matches, loading, error, load } = useDemoData()
 const favorites = ref(readPovFavorites(localStorage.getItem('cs2-pov-favorites')))
 const matchTitles = ref(readMatchTitles())
-const selectedMatch = ref(null), editing = ref(null), drafts = ref({}), busy = ref(null), notice = ref('')
+const selectedMatch = ref(null), editing = ref(null), drafts = ref({}), busy = ref(null), notice = ref(''), recordingFailure = ref(false)
 const povs = ref([]), povLoading = ref(false), povError = ref(''), page = ref(1), pageSize = 5, matchPage = ref(1), matchPageSize = 8
 const editingMatchTitle = ref(false), matchTitleDraft = ref('')
 let mounted = true
@@ -81,9 +81,15 @@ async function loadPovs() {
 }
 async function generate(item) {
   if (busy.value != null) return
-  busy.value = item.id; notice.value = ''
+  busy.value = item.id; notice.value = ''; recordingFailure.value = false
   try {
     if (!await loadPovs()) throw new Error('未能确认已有 POV，请先重试检查')
+    if (window.csdemoDesktop?.settings) {
+      const environment = await window.csdemoDesktop.settings.get()
+      const labels = {CS2_EXE:'CS2（cs2.exe）',HLAE_EXE:'HLAE（HLAE.exe）',FFMPEG_EXE:'FFmpeg（ffmpeg.exe）',FFPROBE_EXE:'FFprobe（ffprobe.exe）'}
+      const missing = (environment.tools || []).filter(tool => !tool.ready).map(tool => labels[tool.key] || tool.key)
+      if (missing.length) throw new Error('缺少或路径失效的录制组件：' + missing.join('、') + '。请进入设置页补全或重新选择路径。')
+    }
     const status = coverage(item), force = status.total > 0 && !status.missing.length
     if (force && !window.confirm('这些玩家的 POV 已经生成。确定重新录制吗？已有视频会保留。')) return
     const response = await fetch(`${API}/pov/export`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...item, force, players: force ? item.players : status.missing }) })
@@ -101,7 +107,7 @@ async function generate(item) {
       if (job.status === 'completed') { await loadPovs(); notice.value = 'POV 已生成'; return }
     }
     if (mounted) notice.value = '录制仍在后台进行，请稍后刷新状态'
-  } catch (exception) { notice.value = exception.message }
+  } catch (exception) { notice.value = exception.message; recordingFailure.value = true }
   finally { busy.value = null }
 }
 function refreshFavorites() { favorites.value = readPovFavorites(localStorage.getItem('cs2-pov-favorites')); page.value = 1; matchPage.value = Math.min(matchPage.value, matchPageCount.value) }
@@ -121,7 +127,7 @@ onUnmounted(() => { mounted = false; document.removeEventListener('pointerdown',
 <template>
   <main class="favorites-page">
     <header class="favorites-title" data-motion="reveal"><div class="favorites-heading"><h1>POV 录制</h1><span>{{groups.length}} 场比赛 · {{count}} 条收藏</span></div><MatchPackageControls scope="favorites" :match-id="current?.available ? current.id : null" /></header>
-    <div v-if="notice" class="favorites-notice" role="status">{{notice}}</div>
+    <div v-if="notice" class="favorites-notice" role="status">{{notice}} <button v-if="recordingFailure" class="ef-button" @click="router.push('/settings')">检查录制组件</button></div>
     <div v-if="error" class="favorites-notice error" role="alert">{{error}} <button class="ef-button" @click="load(null,true)">重试</button></div>
     <div v-if="groups.length" class="favorites-shell" data-motion="reveal">
       <aside class="favorites-sidebar" aria-label="收藏比赛列表"><h2>比赛记录</h2><Transition name="sidebar-slide" mode="out-in"><div :key="matchPage" class="favorites-sidebar-matches"><button v-for="group in pagedGroups" :key="group.id" :class="{active:group.id===current?.id}" :aria-pressed="group.id===current?.id" @click="chooseMatch(group.id)"><MapIcon :map="group.map" :label="mapName(group.map)" /><span class="favorite-match-copy"><strong>{{displayMatchTitle(group)}}</strong><time>{{matchTime(group.date,group.dateSource)}}</time><small>{{group.items.length}} 条收藏 · 比赛 #{{group.id}}</small></span></button></div></Transition><div v-if="matchPageCount > 1" class="favorites-sidebar-pagination" aria-label="收藏比赛分页"><button class="ef-button ef-button--quiet" :disabled="matchPage===1" aria-label="上一页比赛" @click="changeMatchPage(matchPage-1)">‹</button><span>第 {{matchPage}} / {{matchPageCount}} 页</span><button class="ef-button ef-button--quiet" :disabled="matchPage===matchPageCount" aria-label="下一页比赛" @click="changeMatchPage(matchPage+1)">›</button></div><small v-if="groups.length" class="favorites-sidebar-count">每页 {{matchPageSize}} 场 · 共 {{groups.length}} 场</small></aside>

@@ -11,9 +11,10 @@ import { prepareReplayEffects, grenadeKind, activeEffectZone, effectRemainingSec
 import { loadGameIcons } from '../lib/gameIcons'
 import { povPlaybackSeconds as playbackSeconds, povPlaybackTick, isPovAutomaticPause } from '../lib/povPlayback'
 import { createPovMediaCache } from '../lib/povMediaCache'
+import { killfeedAssisterColor } from '../lib/replayKillfeed'
 import { eventPreviewTick, playerTimelineMarkers } from '../lib/replayTimeline'
 import { readPovFavorites, samePovFavorite, addPovFavorite } from '../lib/povFavorites'
-import { createHudAnimationController, HUD_ANIMATION_MODES } from '../lib/endfieldHudAnimation'
+import { createRoundHudTransition } from '../lib/roundHudTransition'
 import '../replay.css'
 const weaponIcon=w=>weaponAsset(w)
 const playerWeaponIcon=p=>{
@@ -41,8 +42,8 @@ const roundStatus=computed(()=>{
   if(text==='回合进行中'||/^回合\s+\d/.test(text))return 'round'
   return 'end'
 })
-const hudPhaseLabel=computed(()=>`第 ${round.value} 回合`)
-const playerTeam=steamid=>{const p=replay.value.players.find(x=>String(x.steamid||'')===String(steamid||''));return Number(p?.teamNumber)||0};const sideColor=team=>{const isT=team===2?replay.value.team2Side===2:replay.value.team2Side===3;return isT?'#f3bf4c':team===2||team===3?'#4aa3ff':'#e5efec'};const killInfo=k=>{let d={};try{d=typeof k.data==='string'?JSON.parse(k.data):(k.data||{})}catch{};const attacker=d.attacker_name||d.attacker||k.attacker||'未知';const assister=d.assister_name||d.assister||d.assist_name||'';const victim=d.user_name||d.victim_name||d.user||k.player||'未知';const attackerSid=d.attacker_steamid||d.attacker_steamid64||d.attacker_xuid||k.attacker_steamid;const victimSid=d.user_steamid||d.victim_steamid||d.user_steamid64||d.victim_steamid64||k.victim_steamid;const weapon=d.weapon||k.weapon||'';const headshot=Boolean(d.headshot||d.head_shot||d.headshot_bool);const throughSmoke=Boolean(d.thru_smoke||d.through_smoke||d.throughSmoke);return {attacker,assister,victim,weapon,weaponLabel:weaponName(weapon),headshot,throughSmoke,attackerColor:sideColor(playerTeam(attackerSid)),victimColor:sideColor(playerTeam(victimSid)),icon:weaponIcon(weapon)}}
+const hudPhaseLabel=computed(()=>roundStatus.value==='bomb'?'炸弹已安放':`第 ${round.value} 回合`)
+const playerTeam=steamid=>{const p=replay.value.players.find(x=>String(x.steamid||'')===String(steamid||''));return Number(p?.teamNumber)||0};const sideColor=team=>{const isT=team===2?replay.value.team2Side===2:replay.value.team2Side===3;return isT?'#f3bf4c':team===2||team===3?'#4aa3ff':'#e5efec'};const killInfo=k=>{let d={};try{d=typeof k.data==='string'?JSON.parse(k.data):(k.data||{})}catch{};const attacker=d.attacker_name||d.attacker||k.attacker||'未知';const assister=d.assister_name||d.assister||d.assist_name||'';const victim=d.user_name||d.victim_name||d.user||k.player||'未知';const attackerSid=d.attacker_steamid||d.attacker_steamid64||d.attacker_xuid||k.attacker_steamid;const victimSid=d.user_steamid||d.victim_steamid||d.user_steamid64||d.victim_steamid64||k.victim_steamid;const weapon=d.weapon||k.weapon||'';const headshot=Boolean(d.headshot||d.head_shot||d.headshot_bool);const throughSmoke=Boolean(d.thru_smoke||d.through_smoke||d.throughSmoke);return {attacker,assister,victim,weapon,weaponLabel:weaponName(weapon),headshot,throughSmoke,attackerColor:sideColor(playerTeam(attackerSid)),assisterColor:killfeedAssisterColor(d,k,replay.value.players,replay.value.team2Side),victimColor:sideColor(playerTeam(victimSid)),icon:weaponIcon(weapon)}}
 const killfeed=computed(()=>replay.value.events.filter(e=>e.type==='player_death'&&Number(e.tick)<=Number(replay.value.globalTick)).slice(-3).reverse())
 const inventoryText=inventory=>{if(!inventory)return "";let raw=inventory;try{raw=typeof inventory==="string"?JSON.parse(inventory):inventory}catch{return String(inventory)};if(!Array.isArray(raw))return String(raw);return raw.map(v=>typeof v==="string"?v:(v?.name||v?.item||v?.classname||"" )).filter(Boolean).join("、")};const inventoryIcons=inventory=>{if(!inventory)return[];let raw=inventory;try{raw=typeof inventory==='string'?JSON.parse(inventory):inventory}catch{return[]};const text=JSON.stringify(raw).toLowerCase();const compact=text.replace(/[\\s_-]/g,'');const out=[];const add=name=>{if(name&&!out.includes(name))out.push(name)};if(text.includes('hegrenade')||text.includes('high explosive'))add('hegrenade');if(text.includes('flash'))add('flashbang');if(text.includes('smoke'))add('smokegrenade');if(text.includes('molotov')||text.includes('incgrenade'))add('incgrenade');if(text.includes('defus')||text.includes('kit'))add('defuser');if(text.includes('c4')||text.includes('bomb'))add('c4');if(compact.includes('glock18'))add('glock');if(compact.includes('usp'))add('usp_silencer');if(compact.includes('knifet')||compact.includes('knife'))add('knife');if(compact.includes('flipknife'))add('knife_flip');if(compact.includes('defuser')||compact.includes('defusekit'))add('defuser');if(compact.includes('knifect'))add('knife');const weapons=['ak47','m4a1','m4a1_silencer','awp','deagle','glock','usp_silencer','p250','mp9','mp7','mp5sd','mac10','famas','galilar','aug','sg556','ssg08','scar20','g3sg1','negev','m249','xm1014','nova','mag7','sawedoff','p90','bizon','ump45','tec9','fiveseven','cz75a','revolver'];for(const w of weapons)if(text.includes(w))add(w);return out}
 const router=useRouter()
@@ -103,8 +104,16 @@ const playerNumber=player=>playerNumbers.value.get(String(player.steamid))||''
 let radarPointer=null, lowerRadarPointer=null, miniRadarPointer=null, drawnRadarPlayers=[], drawnLowerRadarPlayers=[], drawnMiniRadarPlayers=[]
 const miniRadar=ref(null),povOverlay=ref(null),overlayFullscreen=ref(false)
 const hudRoot=ref(null)
+const roundIntro=ref(false)
+let roundIntroGeneration=0
+function clearRoundIntro(){++roundIntroGeneration;hudAnimation?.settle();roundIntro.value=false}
+function showRoundIntro(targetSelector = '.hud-phase'){
+  clearRoundIntro()
+  const generation=roundIntroGeneration
+  roundIntro.value=true
+  nextTick(()=>{if(generation===roundIntroGeneration)hudAnimation?.play({targetSelector})})
+}
 let hudAnimation=null
-let lastHudStatus=null
 const nukeDual=computed(()=>currentMap.value==='de_nuke')
 function onRadarPointer(event,mini=false,floor='upper'){const c=mini?miniRadar.value:floor==='lower'?lowerCanvas.value:canvas.value,bounds=c?.getBoundingClientRect();if(!bounds)return;const pointer={x:(event.clientX-bounds.left)/bounds.width*c.clientWidth,y:(event.clientY-bounds.top)/bounds.height*c.clientHeight};if(mini)miniRadarPointer=pointer;else if(floor==='lower')lowerRadarPointer=pointer;else radarPointer=pointer;draw()}
 function onRadarClick(event,mini=false,floor='upper'){
@@ -120,7 +129,7 @@ function onRadarClick(event,mini=false,floor='upper'){
   if(file?.url)showOverlayVideo(file.url)
 }
 function onReplayBlankClick(event){
-  if(event.target.closest('button,a,input,select,textarea,video,canvas,[role="button"],[contenteditable="true"]'))return
+  if(event.target.closest('.timeline-scrubber-wrap,.replay-center-controls,.round-track,button,a,input,select,textarea,video,canvas,[role="button"],[contenteditable="true"]'))return
   timelinePlayer.value=''
   if(overlayVideoUrl.value)closeOverlayVideo()
 }
@@ -318,6 +327,8 @@ async function loadReplay(reset=false,targetRound=round.value){
 function lerpYaw(from,to,alpha){const a=Number(from)||0,b=Number(to)||0;return a+((b-a+540)%360-180)*alpha}
 async function selectRound(n){
   if(n<1||n>rounds.value.length||roundSwitching.value)return
+  const roundChanged=Number(n)!==Number(round.value)
+  clearRoundIntro()
   const wasPlaying=playing.value
   roundSwitching.value=true
   selectedPlayers.value=[]
@@ -333,7 +344,8 @@ async function selectRound(n){
     roundSwitching.value=false
     // A new round is an explicit visual boundary even when both rounds start
     // in the same semantic phase (for example, buy -> buy).
-    nextTick(()=>syncHudAnimation(roundStatus.value,true))
+    if(roundChanged&&!replayError.value&&Number(replay.value.roundNumber)===Number(n))showRoundIntro()
+    nextTick(()=>syncHudAnimation(roundStatus.value))
     if(wasPlaying&&!replayError.value){playing.value=true;syncPovVideo(true);setPlayback(true)}
   }catch{roundSwitching.value=false}
 }
@@ -424,19 +436,15 @@ async function showOverlayVideo(url){
 }
 
 function closeOverlayVideo({keepFullscreen=false}={}){if(!keepFullscreen)timelinePlayer.value='';if(!keepFullscreen&&document.fullscreenElement===povOverlay.value)document.exitFullscreen().catch(()=>{});const wasPlaying=playing.value,origin=overlayOrigin,video=overlayVideo.value;if(origin?.video){origin.video.controls=false;origin.video.dataset.overlay='';origin.video.classList.remove('pov-promoted-video');for(const key of ['position','width','height','max-width','max-height','aspect-ratio','object-fit'])origin.video.style.removeProperty(key);origin.placeholder?.replaceWith(origin.video)}overlayOrigin=null;overlayVideo.value=null;switchingOverlaySource.value=keepFullscreen;expandedPovUrl.value='';overlayVideoUrl.value='';miniRadarPointer=null;nextTick(()=>{routePovAudio();if(video&&playing.value&&!roundSwitching.value)setVideoPlaying(video,true)})}
-function syncHudAnimation(status=roundStatus.value,force=false){
-  if(!hudAnimation)return
-  if(lastHudStatus===null){
-    lastHudStatus=status
-    hudAnimation.settle()
-    return
-  }
-  if(!force&&lastHudStatus===status)return
-  lastHudStatus=status
-  hudAnimation.replay()
-  hudAnimation.play()
+function syncHudAnimation(){
+  if(!hudAnimation||roundIntro.value)return
+  // Phase changes update the compact HUD without replaying its entrance.
+  hudAnimation.settle()
 }
-watch(roundStatus,status=>nextTick(()=>syncHudAnimation(status)),{flush:'post'})
+watch(roundStatus,(status,previous)=>{
+  if(status!==previous && !loadingReplay.value && !roundSwitching.value && (status==='bomb'||status==='defused'))showRoundIntro(status==='defused'?'.hud-primary':'.hud-phase')
+  else nextTick(()=>syncHudAnimation(status))
+},{flush:'post'})
 function frame(now){
   const dt=Math.min(1000,Math.max(0,now-lastFrame));lastFrame=now
   // Native video controls can emit transport events while a source buffers.
@@ -533,12 +541,12 @@ watch(currentMap,map=>{
   load(`/maps/radar/${map}.png`,radar)
   if(map==='de_nuke')load('/maps/radar/de_nuke_lower.png',lowerRadar)
 },{immediate:true})
-watch(matchId,()=>{playing.value=false;selectedPlayers.value=[];favoriteError.value='';positionCache.clear();povJobs.value=[];round.value=Math.max(1,Number(route.query.round)||1);endLoaded=false;endHold=0;fromPlayers=[];toPlayers=[];loadPovExports();loadReplay(true)},{immediate:true})
+watch(matchId,()=>{clearRoundIntro();playing.value=false;selectedPlayers.value=[];favoriteError.value='';positionCache.clear();povJobs.value=[];round.value=Math.max(1,Number(route.query.round)||1);endLoaded=false;endHold=0;fromPlayers=[];toPlayers=[];loadPovExports();loadReplay(true)},{immediate:true})
 watch(()=>currentPovFiles.value.map(f=>f.url).join('|'),()=>{allPovVideos().forEach(v=>setVideoPlaying(v,false));povMediaCache.setFiles(currentPovFiles.value.map(f=>f.url));resyncPovVideo()},{immediate:true})
 let resizeDrawFrame=0
 const scheduleResizeDraw=()=>{if(resizeDrawFrame)return;resizeDrawFrame=requestAnimationFrame(()=>{resizeDrawFrame=0;draw()})}
-onMounted(()=>{document.addEventListener('fullscreenchange',onPovFullscreenChange);document.addEventListener('webkitfullscreenchange',onPovFullscreenChange);window.addEventListener('resize',scheduleResizeDraw);nextTick(()=>{hudAnimation=createHudAnimationController(hudRoot.value,{mode:HUD_ANIMATION_MODES.COMPACT,durationMs:1600,loop:false});syncHudAnimation(roundStatus.value)});loadGameIcons(assetUrl,draw);loadMatches();raf=requestAnimationFrame(frame)})
-onUnmounted(()=>{povMediaCache.dispose();document.removeEventListener('fullscreenchange',onPovFullscreenChange);document.removeEventListener('webkitfullscreenchange',onPovFullscreenChange);window.removeEventListener('resize',scheduleResizeDraw);closeOverlayVideo();hudAnimation?.destroy();hudAnimation=null;++playbackRequest;controller?.abort();cancelAnimationFrame(raf);cancelAnimationFrame(resizeDrawFrame);resizeObserver?.disconnect()})
+onMounted(()=>{document.addEventListener('fullscreenchange',onPovFullscreenChange);document.addEventListener('webkitfullscreenchange',onPovFullscreenChange);window.addEventListener('resize',scheduleResizeDraw);nextTick(()=>{if(!hudRoot.value)return;hudAnimation=createRoundHudTransition(hudRoot.value,{durationMs:1700,onComplete:()=>{roundIntro.value=false}});syncHudAnimation(roundStatus.value)});loadGameIcons(assetUrl,draw);loadMatches();raf=requestAnimationFrame(frame)})
+onUnmounted(()=>{clearRoundIntro();povMediaCache.dispose();document.removeEventListener('fullscreenchange',onPovFullscreenChange);document.removeEventListener('webkitfullscreenchange',onPovFullscreenChange);window.removeEventListener('resize',scheduleResizeDraw);closeOverlayVideo();hudAnimation?.destroy();hudAnimation=null;++playbackRequest;controller?.abort();cancelAnimationFrame(raf);cancelAnimationFrame(resizeDrawFrame);resizeObserver?.disconnect()})
 </script>
 <template>
 <main class="replay-page" @click="onReplayBlankClick">
@@ -578,7 +586,7 @@ onUnmounted(()=>{povMediaCache.dispose();document.removeEventListener('fullscree
     </div><div class="team-overlay team-left">
 <b>TEAM A · {{teamStats[0]?.alive}}/{{teamStats[0]?.players.length}}<em class="team-score">{{teamStats[0]?.score}}</em></b>
 <ReplayPlayerCard v-for="p in teamStats[0]?.players" :key="p.steamid" :player="p" :round-stats="roundKillStats.get(String(p.steamid))" :selected="selectedPlayers.includes(String(p.steamid))" :radar-number="playerNumber(p)" :radar-color="sideColor(Number(p.teamNumber))" :weapon-icon="playerWeaponIcon(p)" :equipment="inventoryIcons(p.inventory).filter(item => ['hegrenade','flashbang','smokegrenade','incgrenade','defuser','c4'].includes(item))" @toggle="togglePlayer" />
-</div><div class="radar-panel"><canvas ref="canvas" tabindex="0" aria-label="战术地图，玩家编号与两侧卡片对应；点击玩家切换到该玩家的 POV（如果已录制）" @pointermove="onRadarPointer" @pointerleave="clearRadarPointer()" @click="onRadarClick"></canvas><div ref="hudRoot" class="replay-hud" :class="{paused: !playing, loading: loadingReplay, [`status-${roundStatus}`]: true}" aria-label="回合倒计时与状态"><div class="hud-pill"><div class="ripples" aria-hidden="true"><i></i><i></i><i></i></div></div><div class="hud-icon"><EndfieldIcon v-if="roundStatus==='buy'" name="buy" :size="15" label="购买时间" /><img v-else-if="roundStatus==='bomb'" class="hud-game-icon" :src="assetUrl('/weapons-flat/c4.svg')" alt="C4 状态" /><img v-else-if="roundStatus==='defused'" class="hud-game-icon" :src="assetUrl('/weapons-flat/defuser.svg')" alt="拆弹器" /><EndfieldIcon v-else name="pulse" :size="15" label="正常回合" /></div><div class="hud-values"><span class="hud-phase">{{hudPhaseLabel}}</span><span class="hud-primary">{{roundSeconds.text}}</span><span class="hud-badge">{{playing ? 'LIVE' : 'PAUSE'}}</span></div></div><div v-if="nukeDual" class="nuke-lower-inset" aria-label="Nuke 下层缩略地图"><span class="nuke-floor-label">下层 · {{replay.players.filter(p=>playerFloor(p)==='lower').length}} 人</span><canvas ref="lowerCanvas" tabindex="0" aria-label="Nuke 下层战术地图" @pointermove="onRadarPointer($event,false,'lower')" @pointerleave="clearRadarPointer(false,'lower')" @click="onRadarClick($event,false,'lower')"></canvas></div><div v-if="radarError || (effectsMissing && !loadingReplay && replay.players.length)" class="radar-effects-note" role="status"><template v-if="radarError">{{radarError}}</template><template v-else>{{effectsMissing}}</template></div><div class="killfeed"><div v-for="(k,i) in killfeed" :key="`${k.tick}-${i}`"><b :style="{color:killInfo(k).attackerColor}">{{killInfo(k).attacker}}</b><span v-if="killInfo(k).assister" class="kill-assist">+ {{killInfo(k).assister}}</span><img v-if="killInfo(k).icon" :src="killInfo(k).icon" class="kill-icon" :alt="killInfo(k).weapon"><span v-else class="kill-weapon-label">{{killInfo(k).weaponLabel}}</span><span v-if="killInfo(k).throughSmoke" class="kill-smoke">穿烟</span><img v-if="killInfo(k).headshot" class="headshot-icon" :src="assetUrl('/weapons-flat/icon_headshot.svg')" alt="爆头"><strong :style="{color:killInfo(k).victimColor}">{{killInfo(k).victim}}</strong></div></div></div><div class="team-overlay team-right">
+</div><div class="radar-panel"><canvas ref="canvas" tabindex="0" aria-label="战术地图，玩家编号与两侧卡片对应；点击玩家切换到该玩家的 POV（如果已录制）" @pointermove="onRadarPointer" @pointerleave="clearRadarPointer()" @click="onRadarClick"></canvas><div ref="hudRoot" class="replay-hud" :class="{paused: !playing, loading: loadingReplay, 'round-intro':roundIntro, [`status-${roundStatus}`]: true}" aria-label="回合倒计时与状态"><div class="hud-pill"><div class="ripples" aria-hidden="true"><i></i><i></i><i></i></div></div><div class="hud-icon"><EndfieldIcon v-if="roundStatus==='buy'" name="buy" :size="15" label="购买时间" /><img v-else-if="roundStatus==='bomb'" class="hud-game-icon" :src="assetUrl('/weapons-flat/c4.svg')" alt="C4 状态" /><img v-else-if="roundStatus==='defused'" class="hud-game-icon" :src="assetUrl('/weapons-flat/defuser.svg')" alt="拆弹器" /><EndfieldIcon v-else name="pulse" :size="15" label="正常回合" /></div><div class="hud-values"><span class="hud-phase" role="status" aria-live="polite">{{hudPhaseLabel}}</span><span class="hud-primary">{{roundSeconds.text}}</span><span class="hud-badge">{{playing ? 'LIVE' : 'PAUSE'}}</span></div></div><div v-if="nukeDual" class="nuke-lower-inset" aria-label="Nuke 下层缩略地图"><span class="nuke-floor-label">下层 · {{replay.players.filter(p=>playerFloor(p)==='lower').length}} 人</span><canvas ref="lowerCanvas" tabindex="0" aria-label="Nuke 下层战术地图" @pointermove="onRadarPointer($event,false,'lower')" @pointerleave="clearRadarPointer(false,'lower')" @click="onRadarClick($event,false,'lower')"></canvas></div><div v-if="radarError || (effectsMissing && !loadingReplay && replay.players.length)" class="radar-effects-note" role="status"><template v-if="radarError">{{radarError}}</template><template v-else>{{effectsMissing}}</template></div><div class="killfeed"><div v-for="(k,i) in killfeed" :key="`${k.tick}-${i}`"><b :style="{color:killInfo(k).attackerColor}">{{killInfo(k).attacker}}</b><span v-if="killInfo(k).assister" class="kill-assist" :style="{color:killInfo(k).assisterColor}">+ {{killInfo(k).assister}}</span><img v-if="killInfo(k).icon" :src="killInfo(k).icon" class="kill-icon" :alt="killInfo(k).weapon"><span v-else class="kill-weapon-label">{{killInfo(k).weaponLabel}}</span><span v-if="killInfo(k).throughSmoke" class="kill-smoke">穿烟</span><img v-if="killInfo(k).headshot" class="headshot-icon" :src="assetUrl('/weapons-flat/icon_headshot.svg')" alt="爆头"><strong :style="{color:killInfo(k).victimColor}">{{killInfo(k).victim}}</strong></div></div></div><div class="team-overlay team-right">
 <b>TEAM B · {{teamStats[1]?.alive}}/{{teamStats[1]?.players.length}}<em class="team-score">{{teamStats[1]?.score}}</em></b>
 <ReplayPlayerCard v-for="p in teamStats[1]?.players" :key="p.steamid" :player="p" :round-stats="roundKillStats.get(String(p.steamid))" :mirror-weapon="true" :selected="selectedPlayers.includes(String(p.steamid))" :radar-number="playerNumber(p)" :radar-color="sideColor(Number(p.teamNumber))" :weapon-icon="playerWeaponIcon(p)" :equipment="inventoryIcons(p.inventory).filter(item => ['hegrenade','flashbang','smokegrenade','incgrenade','defuser','c4'].includes(item))" @toggle="togglePlayer" />
 </div></div></section><section class="timeline"><div class="replay-center-controls" aria-label="回合回放控制"><span class="timeline-clock">{{formatClock((replay.globalTick-replay.startTick)/64)}} / {{formatClock((replay.endTick-replay.startTick)/64)}}</span><button v-memo="[round, controlsBusy]" class="round-nav-button" title="上一回合" aria-label="上一回合" :disabled="round<=1 || controlsBusy" @click="previousRound"><EndfieldIcon name="previous" :size="18" /></button><button v-memo="[playing]" class="center-play-button" :title="playing ? '暂停回放' : '播放回放'" :aria-label="playing ? '暂停回放' : '播放回放'" @click="toggle"><EndfieldIcon :name="playing ? 'pause' : 'play'" :size="24" /></button><button v-memo="[round, rounds.length, controlsBusy]" class="round-nav-button" title="下一回合" aria-label="下一回合" :disabled="round>=rounds.length || controlsBusy" @click="nextRound"><EndfieldIcon name="next" :size="18" /></button><span class="round-counter">第 {{round}} 回合</span></div><div v-memo="[round, rounds.length]" class="round-track" :style="{gridTemplateColumns:`repeat(${rounds.length}, minmax(0, 1fr))`}"><button v-for="n in rounds" :key="n" :class="[{active:n===round}, `winner-${roundWinner(n)}`]" @click="selectRound(n)" :aria-label="`跳转到第 ${n} 回合，${roundWinnerLabel(n)}`" :title="`第 ${n} 回合 · ${roundWinnerLabel(n)}`">{{n}}</button></div><div class="timeline-scrubber-wrap">

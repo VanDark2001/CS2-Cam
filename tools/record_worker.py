@@ -77,11 +77,29 @@ def resolve_ffprobe(ffmpeg):
         raise RuntimeError('FFprobe is required to validate full-round recordings; set FFPROBE_EXE or install FFprobe on PATH')
     return pathlib.Path(candidate)
 
+def validate_recording_tools():
+    missing = []
+    for key, label in [('CS2_EXE', 'CS2（cs2.exe）'), ('HLAE_EXE', 'HLAE（HLAE.exe）'), ('FFMPEG_EXE', 'FFmpeg（ffmpeg.exe）')]:
+        value = os.environ.get(key, '')
+        if not value or not pathlib.Path(value).is_file():
+            missing.append(label)
+    hlae = os.environ.get('HLAE_EXE', '')
+    if hlae and pathlib.Path(hlae).is_file() and not (pathlib.Path(hlae).parent / 'x64/AfxHookSource2.dll').is_file():
+        missing.append('HLAE 注入组件（x64/AfxHookSource2.dll，请完整解压 HLAE）')
+    try:
+        ffprobe = resolve_ffprobe(os.environ.get('FFMPEG_EXE') or 'ffmpeg.exe')
+    except RuntimeError:
+        missing.append('FFprobe（ffprobe.exe）')
+        ffprobe = None
+    if missing:
+        raise RuntimeError('缺少或路径失效的录制组件：' + '、'.join(missing) + '。请进入设置页补全或重新选择路径后重试。')
+    return ffprobe
+
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--task',required=True); ap.add_argument('--output',required=True)
     a=ap.parse_args(); task=json.loads(pathlib.Path(a.task).read_text(encoding='utf-8')); out=pathlib.Path(a.output); out.mkdir(parents=True,exist_ok=True)
     demo=os.environ.get('CS2_DEMO') or task.get('demo_path');
-    if not demo or not pathlib.Path(demo).is_file(): raise SystemExit('CS2_DEMO/demo_path must point to an existing .dem')
+    if not demo or not pathlib.Path(demo).is_file(): raise SystemExit('缺少本场比赛的原始 Demo 文件。请重新导入原始 .dem；比赛包内的统计数据不能用于重新录制。')
     players=task.get('players') or []
     if not players: raise SystemExit('at least one player is required')
     # Stop just before the next round's actual freeze/buy phase begins.
@@ -89,11 +107,8 @@ def main():
     capture_end_tick=int(task.get('captureEndTick',task['endTick']))
     cfg=out/'hlae-worker.json'; cfg.write_text(json.dumps({'demo_path':str(pathlib.Path(demo).resolve()),'players':players,'start_tick':int(task['startTick']),'end_tick':capture_end_tick,'requested_end_tick':int(task['endTick']),'output_dir':str(out)},ensure_ascii=False,indent=2),encoding='utf-8')
     hlae=os.environ.get('HLAE_EXE',''); cs2=os.environ.get('CS2_EXE','')
-    if not pathlib.Path(hlae).is_file(): raise SystemExit(f'HLAE not found: {hlae}')
-    if not pathlib.Path(cs2).is_file(): raise SystemExit(f'CS2 not found: {cs2}')
     ffmpeg=os.environ.get('FFMPEG_EXE','')
-    if not ffmpeg: raise SystemExit('FFmpeg 路径未设置，请在设置页选择 FFmpeg')
-    ffprobe=resolve_ffprobe(ffmpeg)
+    ffprobe=validate_recording_tools()
     try:
         timescale=max(1.0,float(os.environ.get('CS2_POV_TIMESCALE','1')))
     except ValueError:
@@ -181,6 +196,25 @@ def main():
     # including single-player recordings.
     finalize_recording(results, out, ffprobe, expected_seconds)
     print(json.dumps({'status':'completed','files':results,'file':results[0]['file'] if len(results)==1 else str(out/'final.mp4')},ensure_ascii=False))
-if __name__=='__main__': main()
+if __name__=='__main__':
+    try:
+        main()
+    except (Exception, SystemExit) as error:
+        if isinstance(error, SystemExit) and error.code in (None, 0):
+            raise
+        message = str(error)
+        for old, new in {
+            'Steam is not running; start Steam before recording':'Steam 未运行，请启动 Steam 并登录后重试。',
+            'CS2 is already running; close it before recording':'CS2 正在运行，请先关闭 CS2，由 HLAE 启动录制。',
+            'Counter-Strike 2 window not found after HLAE launch':'HLAE 启动后未找到 CS2 窗口，请检查游戏路径、Steam 登录状态和 HLAE 注入组件。',
+            'Batch capture timed out; game left paused for diagnosis':'录制超时，CS2 已保留在暂停状态。请检查 Demo 能否正常播放及 HLAE 控制连接。',
+        }.items():
+            message = message.replace(old, new)
+        if '--output' in sys.argv:
+            output = pathlib.Path(sys.argv[sys.argv.index('--output') + 1])
+            output.mkdir(parents=True, exist_ok=True)
+            (output/'worker-error.json').write_text(json.dumps({'message':message},ensure_ascii=False),encoding='utf-8')
+        print(message, file=sys.stderr)
+        sys.exit(1)
 
 

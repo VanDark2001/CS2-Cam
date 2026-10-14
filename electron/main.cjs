@@ -11,7 +11,7 @@ ipcMain.handle('theme:set', (event, theme) => {
   const window = BrowserWindow.fromWebContents(event.sender)
   if (!window) throw new Error('Unknown window')
   nativeTheme.themeSource = theme
-  window.setBackgroundColor(theme === 'light' ? '#f2f2ec' : '#191a19')
+  window.setBackgroundColor(theme === 'light' ? '#d8dbd3' : '#191a19')
 })
 let updater = null
 let installingUpdate = false
@@ -41,15 +41,30 @@ app.on('second-instance', () => {
   if (window) { if (window.isMinimized()) window.restore(); window.focus() }
 })
 
-// Replay is designed around a 1440x960 content area. Electron's zoom factor
-// keeps that composition intact while fitting smaller desktop windows.
-const DESIGN_WIDTH = 1440
-const DESIGN_HEIGHT = 960
+// A stable desktop scale; resizing or returning from screen capture must not change it.
+const PAGE_ZOOM = 0.9
 
 function updateWindowZoom(window) {
-  const [width, height] = window.getContentSize()
-  const scale = Math.max(0.6, Math.min(1, width / DESIGN_WIDTH, height / DESIGN_HEIGHT))
-  window.webContents.setZoomFactor(scale)
+  if (window.isDestroyed() || window.webContents.isDestroyed()) return
+  window.webContents.setZoomFactor(PAGE_ZOOM)
+}
+
+function installWindowZoomGuards(window) {
+  const contents = window.webContents
+  contents.setVisualZoomLevelLimits(1, 1).catch(() => {})
+  contents.on('before-input-event', (event, input) => {
+    if ((input.control || input.meta) &&
+        (['+', '=', '-', '_', '0'].includes(input.key) ||
+         ['NumpadAdd', 'NumpadSubtract', 'Numpad0'].includes(input.code))) {
+      event.preventDefault()
+      updateWindowZoom(window)
+    }
+  })
+  contents.on('zoom-changed', () => setImmediate(() => updateWindowZoom(window)))
+  window.on('focus', () => {
+    updateWindowZoom(window)
+    setImmediate(() => updateWindowZoom(window))
+  })
 }
 
 function projectRoot() {
@@ -178,6 +193,7 @@ async function createWindow() {
     show: process.env.CS2_DESKTOP_SMOKE !== '1',
     webPreferences: { contextIsolation: true, sandbox: true, preload: path.join(__dirname, 'preload.cjs'), additionalArguments: [`--csdemo-api-port=${BACKEND_PORT}`] },
   })
+  installWindowZoomGuards(window)
   window.on('resize', () => updateWindowZoom(window))
   window.webContents.setWindowOpenHandler(({url})=>{try{if(['github.com','space.bilibili.com'].includes(new URL(url).hostname))shell.openExternal(url)}catch{}return {action:'deny'}})
   window.on('close', event => {
@@ -293,6 +309,15 @@ app.whenReady().then(() => {
   ipcMain.removeHandler('settings:choose-path')
   ipcMain.removeHandler('settings:install-tools')
   ipcMain.removeHandler('settings:open-recording-cfg')
+  ipcMain.removeHandler('settings:open-demo-folder')
+  ipcMain.handle('settings:open-demo-folder', async () => {
+    if (!portable) throw new Error('请使用便携桌面版打开 Demo 文件夹')
+    const directory = path.join(portable.data, 'uploads')
+    fs.mkdirSync(directory, { recursive: true })
+    const error = await shell.openPath(directory)
+    if (error) throw new Error('无法打开 Demo 文件夹：' + error)
+    return { path: directory }
+  })
   ipcMain.handle('settings:open-recording-cfg', async () => {
     if (!portable) throw new Error('当前运行环境不支持录制 CFG')
     const file = portable.recordingCfgFile()
