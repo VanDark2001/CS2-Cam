@@ -48,6 +48,15 @@ public class DatabaseRepository {
   }
 
   public Connection connection() throws SQLException { return open(false); }
+  /** Team labels are optional Demo metadata, keyed by the fixed roster teams. */
+  public Map<String,String> teamNames(Connection c,long id) throws SQLException {
+    Map<String,String> names=new HashMap<>();
+    try(PreparedStatement ps=c.prepareStatement("SELECT JSON_EXTRACT(data_json,'$.\"2\"'),JSON_EXTRACT(data_json,'$.\"3\"') FROM events WHERE match_id=? AND event_name='match_team_names' ORDER BY id DESC LIMIT 1")) {
+      ps.setLong(1,id);
+      try(ResultSet rs=ps.executeQuery()){if(rs.next())for(int i=1;i<=2;i++){String name=rs.getString(i);if(name!=null&&!name.isBlank())names.put(String.valueOf(i+1),name.strip());}}
+    }
+    return names;
+  }
   /** Null means blindness was not extracted; an empty map is a verified zero. */
   public Map<String,Integer> flashBlindCounts(Connection c,long id,long start,long end)throws SQLException {
     try(PreparedStatement ps=c.prepareStatement("SELECT 1 FROM events WHERE match_id=? AND event_name IN ('player_blind','flash_blinds_ready') LIMIT 1")) {

@@ -15,5 +15,8 @@ export function writeMatchTitles(titles) {
 }
 
 export function matchTitle(match, titles, fallback) {
-  return titles?.[String(match?.id)]?.trim() || fallback
+  const names = match?.teamNames
+  const team3 = typeof names?.['3'] === 'string' ? names['3'].trim() : ''
+  const team2 = typeof names?.['2'] === 'string' ? names['2'].trim() : ''
+  return titles?.[String(match?.id)]?.trim() || (team3 && team2 ? `${team3} VS ${team2}` : '') || fallback
 }

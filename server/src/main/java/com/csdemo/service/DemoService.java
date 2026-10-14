@@ -75,6 +75,7 @@ public class DemoService {
       while(rs.next()){
         long id=rs.getLong("id");String storedPath=rs.getString("demo_file_path"),fileName;try{fileName=Path.of(storedPath).getFileName().toString();}catch(Exception ignored){fileName=storedPath;}String fingerprint=fileName+"|"+rs.getLong("event_end_tick");if(!seenMatches.add(fingerprint))continue;Map<String,Object> m=new LinkedHashMap<>();
         m.put("id",id);m.put("map",rs.getString("map_name"));m.put("result","已解析");m.put("score",rs.getObject("final_score_ct")==null?"—":rs.getInt("final_score_ct")+" : "+rs.getInt("final_score_t"));m.put("date",rs.getString("display_time"));m.put("dateSource",rs.getString("recording_time_source"));m.put("server",rs.getString("server_name"));m.put("file",rs.getString("demo_file_path"));m.put("status","已完成");m.put("tickRate",64);
+        m.put("teamNames",databaseRepository.teamNames(c,id));
         try{m.put("players",loadPlayers(c,id,nullableLong(rs,"official_start_tick"),nullableLong(rs,"warmup_end_tick")));}
         catch(Exception e){System.err.println("[csdemo] match "+id+" stats degraded: "+e.getMessage());m.put("players",loadRoster(c,id));m.put("statsWarning",e.getMessage());}
         out.add(m);

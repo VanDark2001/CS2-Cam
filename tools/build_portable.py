@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PYTHON_URL = 'https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip'
 PYTHON_MD5 = 'fe8ef205f2e9c3ba44d0cf9954e1abd3'
 APP_FILES = ['main.cjs', 'preload.cjs', 'portable-runtime.cjs', 'backend-build.cjs', 'package.json', 'updater.cjs', 'release-config.json', 'install-update.ps1', 'assets/app-icon.ico', 'assets/app-icon.png']
-ROOT_SCRIPTS = ['demoparser2_mysql.py', 'flash_blinds.py', 'replay_positions.py', 'replay_effects.py', 'db_schema.py', 'match_scoring.py', 'steam_avatar_scraper.py', 'requirements.txt', 'sqlite_schema.sql', 'sqlite_schema_v2.sql']
+ROOT_SCRIPTS = ['demoparser2_mysql.py', 'team_names.py', 'flash_blinds.py', 'replay_positions.py', 'replay_effects.py', 'db_schema.py', 'match_scoring.py', 'steam_avatar_scraper.py', 'requirements.txt', 'sqlite_schema.sql', 'sqlite_schema_v2.sql']
 POV_FILES = ['export_single_pov.ps1', 'hlae_wrapper.ps1', 'hlae_wrapper.py', 'batch_capture.js', 'recording_profile.py', 'capture_monitor.py']
 
 

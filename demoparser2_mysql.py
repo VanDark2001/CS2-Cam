@@ -9,6 +9,7 @@ from match_scoring import score_round_winners
 from steam_avatar_scraper import download_avatars
 from replay_positions import position_stream, steamid as position_steamid, write_positions
 from flash_blinds import extract_blinds, replace_blinds
+from team_names import extract_team_names, replace_team_names
 
 demo=Path(sys.argv[1]); stage_path=os.getenv('CS2_PARSE_STAGE_FILE')
 def set_stage(name):
@@ -103,6 +104,11 @@ except Exception: pass
 for row in player_rows:
  sid=str(row.get('steamid')); profile_name=row.get('name') or sid; demo_name=name_by_sid.get(sid) or profile_name
  c.execute('INSERT INTO players(steamid,name) VALUES(?,?) ON CONFLICT(steamid) DO UPDATE SET name=COALESCE(players.name,excluded.name)',(sid,profile_name)); c.execute('INSERT INTO match_players(match_id,steamid,team_number,display_name) VALUES(?,?,?,?) ON CONFLICT(match_id,steamid) DO UPDATE SET team_number=excluded.team_number,display_name=excluded.display_name',(mid,sid,row.get('team_number'),demo_name))
+set_stage('team names')
+try:
+ replace_team_names(con,mid,extract_team_names(p,player_rows,official_tick))
+except Exception as exc:
+ print('[team names] unavailable:',exc,file=sys.stderr)
 # Keep the match, roster, ticks and events in one transaction. If any later
 # parsing step fails, closing the connection rolls back the entire partial
 # match instead of leaving a duplicate placeholder that blocks retry.
